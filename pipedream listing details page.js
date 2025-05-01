@@ -106,7 +106,7 @@ export default defineComponent({
         "cg_status", "hs_price", "cg_build_list_price", "cg_listed_package_price", 
         "cg_land_release_price", "cg_land_type", "hs_lot_size", "cg_total_build_size", 
         "hs_bedrooms", "hs_bathrooms", "cg_car", "cg_house_type", "cg_facade", 
-        "cg_title", "hs_listing_type", "cg_description", "cg_features_list",
+        "cg_title", "hs_listing_type", "cg_listing_type", "cg_description", "cg_features_list",
         "hs_address_1", 
         
         // Location details
@@ -160,10 +160,10 @@ export default defineComponent({
         
         // Log some key fields for debugging
         console.log(`Property ID: ${property.id}`);
-        console.log(`Property Type: ${property.properties?.hs_listing_type}`);
+        console.log(`Property Type: ${property.properties?.hs_listing_type || property.properties?.cg_listing_type}`);
         console.log(`Property Suburb: ${property.properties?.hs_city}`);
         console.log(`Property Storeys: ${property.properties?.cg_storeys}`);
-        console.log(`Property Title: ${property.properties?.cg_title}`);
+        console.log(`Property Title Type: ${property.properties?.cg_title}`);
       } catch (e) {
         console.error(`JSON parse error: ${e.message}`);
         return $.respond({
