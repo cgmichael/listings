@@ -1,0 +1,266 @@
+<!-- Optimized Filter Sections for Land Developer -->
+
+<!-- Filters Section -->
+<div class="property-filters-container">
+  <div class="property-filters-header">
+    <h2 class="property-filters-title">Filter Properties</h2>
+    <button class="property-filters-toggle" id="toggle-filters">
+      <span class="toggle-text">Hide Filters</span>
+      <i class="fas fa-chevron-up"></i>
+    </button>
+  </div>
+  
+  <!-- Primary Search & Location Filters - Always Visible -->
+  <div class="property-filters">
+    <div class="search-bar">
+      <label for="property-search">Search Properties</label>
+      <div class="search-input-container">
+        <input type="text" id="property-search" placeholder="Search by location, project, lot number...">
+        <button class="search-button" id="search-button">
+          <i class="fas fa-search"></i>
+        </button>
+      </div>
+    </div>
+    
+    <!-- Project is most important for a land developer -->
+    <div class="filter-group">
+      <label for="project-filter">Project</label>
+      <select id="project-filter" class="filter-select">
+        <option value="">All Projects</option>
+        <!-- Will be populated dynamically -->
+      </select>
+    </div>
+    
+    <!-- Stage is second most important since it relates to release timing -->
+    <div class="filter-group">
+      <label for="stage-filter">Stage</label>
+      <select id="stage-filter" class="filter-select">
+        <option value="">All Stages</option>
+        <!-- Will be populated dynamically -->
+      </select>
+    </div>
+  </div>
+  
+  <!-- Essential Land Property Filters - Prioritized for Land Developers -->
+  <div class="property-filters" style="display: flex; margin-top: 16px;">
+    <!-- Title Type is critical for land developers -->
+    <div class="filter-group">
+      <label for="title-type-filter">Title Type</label>
+      <select id="title-type-filter" class="filter-select">
+        <option value="">All Title Types</option>
+        <option value="Torrens">Torrens</option>
+        <option value="Community">Community</option>
+      </select>
+    </div>
+    
+    <!-- Land Size is a primary search criteria -->
+    <div class="filter-group">
+      <label for="land-size-filter">Land Size</label>
+      <select id="land-size-filter" class="filter-select">
+        <option value="">Any Size</option>
+        <option value="0-300">Under 300m²</option>
+        <option value="300-450">300m² - 450m²</option>
+        <option value="450-600">450m² - 600m²</option>
+        <option value="600-800">600m² - 800m²</option>
+        <option value="800+">Over 800m²</option>
+      </select>
+    </div>
+    
+    <!-- Registration Date is essential for buyers looking at timeframes -->
+    <div class="filter-group">
+      <label for="registration-date-filter">Registration Date</label>
+      <select id="registration-date-filter" class="filter-select">
+        <option value="">Any Date</option>
+        <option value="next-3-months">Next 3 Months</option>
+        <option value="next-6-months">Next 6 Months</option>
+        <option value="this-year">This Year</option>
+        <option value="next-year">Next Year</option>
+        <option value="registered">Already Registered</option>
+      </select>
+    </div>
+  </div>
+  
+  <!-- Land Dimension Filters - Highly Relevant -->
+  <div class="property-filters" style="display: flex; margin-top: 16px;">
+    <!-- Frontage is critical for land planning -->
+    <div class="filter-group">
+      <label for="frontage-filter">Frontage (m)</label>
+      <select id="frontage-filter" class="filter-select">
+        <option value="">Any Frontage</option>
+        <option value="0-10">Under 10m</option>
+        <option value="10-15">10m - 15m</option>
+        <option value="15-20">15m - 20m</option>
+        <option value="20+">Over 20m</option>
+      </select>
+    </div>
+    
+    <!-- Depth complements frontage for land layout -->
+    <div class="filter-group">
+      <label for="depth-filter">Depth (m)</label>
+      <select id="depth-filter" class="filter-select">
+        <option value="">Any Depth</option>
+        <option value="0-20">Under 20m</option>
+        <option value="20-30">20m - 30m</option>
+        <option value="30-40">30m - 40m</option>
+        <option value="40+">Over 40m</option>
+      </select>
+    </div>
+    
+    <!-- Aspect is important for land buyers -->
+    <div class="filter-group">
+      <label for="aspect-filter">Aspect</label>
+      <select id="aspect-filter" class="filter-select">
+        <option value="">All Aspects</option>
+        <option value="North">North</option>
+        <option value="South">South</option>
+        <option value="East">East</option>
+        <option value="West">West</option>
+        <option value="North East">North East</option>
+        <option value="North West">North West</option>
+        <option value="South East">South East</option>
+        <option value="South West">South West</option>
+      </select>
+    </div>
+  </div>
+  
+  <!-- Location & Status Filters -->
+  <div class="property-filters" style="display: flex; margin-top: 16px;">
+    <!-- Suburb is important for location-based searching -->
+    <div class="filter-group">
+      <label for="suburb-filter">Suburb</label>
+      <select id="suburb-filter" class="filter-select">
+        <option value="">All Suburbs</option>
+        <!-- Will be populated dynamically -->
+      </select>
+    </div>
+    
+    <!-- Neighborhood within the suburb -->
+    <div class="filter-group">
+      <label for="neighborhood-filter">Neighborhood</label>
+      <select id="neighborhood-filter" class="filter-select">
+        <option value="">All Neighborhoods</option>
+        <!-- Will be populated dynamically -->
+      </select>
+    </div>
+    
+    <!-- Status is important for availability -->
+    <div class="filter-group">
+      <label for="status-filter">Status</label>
+      <select id="status-filter" class="filter-select">
+        <option value="">All Statuses</option>
+        <!-- Will be populated dynamically -->
+      </select>
+    </div>
+  </div>
+  
+  <!-- Land Shape and Price Filters -->
+  <div class="property-filters" id="advanced-filters" style="display: flex; margin-top: 16px;">
+    <!-- Land shape is important for land developers -->
+    <div class="filter-group">
+      <label for="land-shape-filter">Land Shape</label>
+      <select id="land-shape-filter" class="filter-select">
+        <option value="">All Land Shapes</option>
+        <!-- Will be populated dynamically -->
+      </select>
+    </div>
+    
+    <!-- Listing Type (moved lower as it's less important for land developers) -->
+    <div class="filter-group">
+      <label for="listing-type-filter">Listing Type</label>
+      <select id="listing-type-filter" class="filter-select">
+        <option value="">All Listing Types</option>
+        <!-- Will be populated dynamically -->
+      </select>
+    </div>
+    
+    <!-- Price Range -->
+    <div class="filter-group">
+      <label for="price-filter">Price Range</label>
+      <select id="price-filter" class="filter-select">
+        <option value="">Any Price</option>
+        <option value="0-500000">Under $500,000</option>
+        <option value="500000-750000">$500,000 - $750,000</option>
+        <option value="750000-1000000">$750,000 - $1,000,000</option>
+        <option value="1000000-1500000">$1,000,000 - $1,500,000</option>
+        <option value="1500000+">$1,500,000+</option>
+      </select>
+    </div>
+  </div>
+  
+  <!-- Building Detail Filters - Lowest Priority for Land Developers -->
+  <div class="property-filters" id="advanced-filters-2" style="display: flex; margin-top: 16px;">
+    <div class="filter-group">
+      <label for="storeys-filter">Storeys</label>
+      <select id="storeys-filter" class="filter-select">
+        <option value="">Any</option>
+        <option value="1">Single Storey</option>
+        <option value="2">Double Storey</option>
+        <option value="3+">3+ Storeys</option>
+      </select>
+    </div>
+    
+    <div class="filter-group">
+      <label for="bedrooms-filter">Bedrooms</label>
+      <select id="bedrooms-filter" class="filter-select">
+        <option value="">Any</option>
+        <option value="1">1+</option>
+        <option value="2">2+</option>
+        <option value="3">3+</option>
+        <option value="4">4+</option>
+        <option value="5">5+</option>
+      </select>
+    </div>
+    
+    <div class="filter-group">
+      <label for="bathrooms-filter">Bathrooms</label>
+      <select id="bathrooms-filter" class="filter-select">
+        <option value="">Any</option>
+        <option value="1">1+</option>
+        <option value="2">2+</option>
+        <option value="3">3+</option>
+        <option value="4">4+</option>
+      </select>
+    </div>
+  </div>
+  
+  <!-- Final Building Filters -->
+  <div class="property-filters" id="advanced-filters-3" style="display: flex; margin-top: 16px;">
+    <div class="filter-group">
+      <label for="car-spaces-filter">Car Spaces</label>
+      <select id="car-spaces-filter" class="filter-select">
+        <option value="">Any</option>
+        <option value="1">1+</option>
+        <option value="2">2+</option>
+        <option value="3">3+</option>
+        <option value="4">4+</option>
+      </select>
+    </div>
+    
+    <div class="filter-group">
+      <label for="build-size-filter">Build Size</label>
+      <select id="build-size-filter" class="filter-select">
+        <option value="">Any Size</option>
+        <option value="0-150">Under 150m²</option>
+        <option value="150-200">150m² - 200m²</option>
+        <option value="200-250">200m² - 250m²</option>
+        <option value="250-300">250m² - 300m²</option>
+        <option value="300+">Over 300m²</option>
+      </select>
+    </div>
+    
+    <div class="filter-group">
+      <!-- Empty placeholder for grid alignment -->
+    </div>
+  </div>
+  
+  <!-- Active Filters -->
+  <div class="active-filters" id="active-filters">
+    <!-- Will be populated dynamically -->
+  </div>
+  
+  <!-- Filter Buttons -->
+  <div class="filter-buttons" id="filter-buttons" style="display: none;">
+    <button class="filter-clear-button" id="clear-filters">Clear All Filters</button>
+    <button class="filter-apply-button" id="apply-filters">Apply Filters</button>
+  </div>
+</div>
