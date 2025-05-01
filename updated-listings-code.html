@@ -835,21 +835,22 @@
         </div>
       </div>
       
-      <!-- Location & Type Filters -->
+      <!-- Essential Property Filters - Reorganized -->
       <div class="property-filters" style="display: flex; margin-top: 16px;">
-        <div class="filter-group">
-          <label for="neighborhood-filter">Neighborhood</label>
-          <select id="neighborhood-filter" class="filter-select">
-            <option value="">All Neighborhoods</option>
-            <!-- Will be populated dynamically -->
-          </select>
-        </div>
-        
         <div class="filter-group">
           <label for="listing-type-filter">Listing Type</label>
           <select id="listing-type-filter" class="filter-select">
             <option value="">All Listing Types</option>
             <!-- Will be populated dynamically -->
+          </select>
+        </div>
+        
+        <div class="filter-group">
+          <label for="title-type-filter">Title Type</label>
+          <select id="title-type-filter" class="filter-select">
+            <option value="">All Title Types</option>
+            <option value="Torrens">Torrens</option>
+            <option value="Community">Community</option>
           </select>
         </div>
         
@@ -862,7 +863,7 @@
         </div>
       </div>
       
-      <!-- Status and Registration Filters -->
+      <!-- Registration and Land Filters -->
       <div class="property-filters" style="display: flex; margin-top: 16px;">
         <div class="filter-group">
           <label for="registration-date-filter">Registration Date</label>
@@ -877,26 +878,27 @@
         </div>
         
         <div class="filter-group">
-          <label for="title-type-filter">Title Type</label>
-          <select id="title-type-filter" class="filter-select">
-            <option value="">All Title Types</option>
-            <option value="Torrens">Torrens</option>
-            <option value="Community">Community</option>
+          <label for="land-size-filter">Land Size</label>
+          <select id="land-size-filter" class="filter-select">
+            <option value="">Any Size</option>
+            <option value="0-300">Under 300m²</option>
+            <option value="300-450">300m² - 450m²</option>
+            <option value="450-600">450m² - 600m²</option>
+            <option value="600-800">600m² - 800m²</option>
+            <option value="800+">Over 800m²</option>
           </select>
         </div>
         
         <div class="filter-group">
-          <label for="storeys-filter">Storeys</label>
-          <select id="storeys-filter" class="filter-select">
-            <option value="">Any</option>
-            <option value="1">Single Storey</option>
-            <option value="2">Double Storey</option>
-            <option value="3+">3+ Storeys</option>
+          <label for="neighborhood-filter">Neighborhood</label>
+          <select id="neighborhood-filter" class="filter-select">
+            <option value="">All Neighborhoods</option>
+            <!-- Will be populated dynamically -->
           </select>
         </div>
       </div>
       
-      <!-- Advanced Filters - Initially Visible -->
+      <!-- Land Detail Filters -->
       <div class="property-filters" id="advanced-filters" style="display: flex; margin-top: 16px;">
         <div class="filter-group">
           <label for="land-shape-filter">Land Shape</label>
@@ -922,52 +924,7 @@
         </div>
         
         <div class="filter-group">
-          <label for="car-spaces-filter">Car Spaces</label>
-          <select id="car-spaces-filter" class="filter-select">
-            <option value="">Any</option>
-            <option value="1">1+</option>
-            <option value="2">2+</option>
-            <option value="3">3+</option>
-            <option value="4">4+</option>
-          </select>
-        </div>
-      </div>
-      
-      <!-- Additional Advanced Filters Row -->
-      <div class="property-filters" id="advanced-filters-2" style="display: flex; margin-top: 16px;">
-        <div class="filter-group">
-          <label>Build Size</label>
-          <select id="build-size-filter" class="filter-select">
-            <option value="">Any Size</option>
-            <option value="0-150">Under 150m²</option>
-            <option value="150-200">150m² - 200m²</option>
-            <option value="200-250">200m² - 250m²</option>
-            <option value="250-300">250m² - 300m²</option>
-            <option value="300+">Over 300m²</option>
-          </select>
-        </div>
-        
-        <div class="filter-group">
-          <label for="project-filter">Project</label>
-          <select id="project-secondary-filter" class="filter-select">
-            <option value="">All Projects</option>
-            <!-- Will be populated dynamically -->
-          </select>
-        </div>
-        
-        <div class="filter-group">
-          <label for="suburb-filter">Suburb</label>
-          <select id="suburb-secondary-filter" class="filter-select">
-            <option value="">All Suburbs</option>
-            <!-- Will be populated dynamically -->
-          </select>
-        </div>
-      </div>
-      
-      <!-- Additional Property Dimension Filters -->
-      <div class="property-filters" id="advanced-filters-3" style="display: flex; margin-top: 16px;">
-        <div class="filter-group">
-          <label>Frontage (m)</label>
+          <label for="frontage-filter">Frontage (m)</label>
           <select id="frontage-filter" class="filter-select">
             <option value="">Any Frontage</option>
             <option value="0-10">Under 10m</option>
@@ -976,33 +933,10 @@
             <option value="20+">Over 20m</option>
           </select>
         </div>
-        
-        <div class="filter-group">
-          <label>Depth (m)</label>
-          <select id="depth-filter" class="filter-select">
-            <option value="">Any Depth</option>
-            <option value="0-20">Under 20m</option>
-            <option value="20-30">20m - 30m</option>
-            <option value="30-40">30m - 40m</option>
-            <option value="40+">Over 40m</option>
-          </select>
-        </div>
-        
-        <div class="filter-group">
-          <label>Land Size</label>
-          <select id="land-size-filter" class="filter-select">
-            <option value="">Any Size</option>
-            <option value="0-300">Under 300m²</option>
-            <option value="300-450">300m² - 450m²</option>
-            <option value="450-600">450m² - 600m²</option>
-            <option value="600-800">600m² - 800m²</option>
-            <option value="800+">Over 800m²</option>
-          </select>
-        </div>
       </div>
       
-      <!-- Home Design Filters -->
-      <div class="property-filters" id="advanced-filters-4" style="display: flex; margin-top: 16px;">
+      <!-- Building Detail Filters -->
+      <div class="property-filters" id="advanced-filters-2" style="display: flex; margin-top: 16px;">
         <div class="filter-group">
           <label for="bedrooms-filter">Bedrooms</label>
           <select id="bedrooms-filter" class="filter-select">
@@ -1027,6 +961,56 @@
         </div>
         
         <div class="filter-group">
+          <label for="car-spaces-filter">Car Spaces</label>
+          <select id="car-spaces-filter" class="filter-select">
+            <option value="">Any</option>
+            <option value="1">1+</option>
+            <option value="2">2+</option>
+            <option value="3">3+</option>
+            <option value="4">4+</option>
+          </select>
+        </div>
+      </div>
+      
+      <!-- Additional Property Filters -->
+      <div class="property-filters" id="advanced-filters-3" style="display: flex; margin-top: 16px;">
+        <div class="filter-group">
+          <label for="depth-filter">Depth (m)</label>
+          <select id="depth-filter" class="filter-select">
+            <option value="">Any Depth</option>
+            <option value="0-20">Under 20m</option>
+            <option value="20-30">20m - 30m</option>
+            <option value="30-40">30m - 40m</option>
+            <option value="40+">Over 40m</option>
+          </select>
+        </div>
+        
+        <div class="filter-group">
+          <label for="storeys-filter">Storeys</label>
+          <select id="storeys-filter" class="filter-select">
+            <option value="">Any</option>
+            <option value="1">Single Storey</option>
+            <option value="2">Double Storey</option>
+            <option value="3+">3+ Storeys</option>
+          </select>
+        </div>
+        
+        <div class="filter-group">
+          <label for="build-size-filter">Build Size</label>
+          <select id="build-size-filter" class="filter-select">
+            <option value="">Any Size</option>
+            <option value="0-150">Under 150m²</option>
+            <option value="150-200">150m² - 200m²</option>
+            <option value="200-250">200m² - 250m²</option>
+            <option value="250-300">250m² - 300m²</option>
+            <option value="300+">Over 300m²</option>
+          </select>
+        </div>
+      </div>
+      
+      <!-- Price and Last Row of Filters -->
+      <div class="property-filters" id="advanced-filters-4" style="display: flex; margin-top: 16px;">
+        <div class="filter-group">
           <label for="price-filter">Price Range</label>
           <select id="price-filter" class="filter-select">
             <option value="">Any Price</option>
@@ -1035,6 +1019,22 @@
             <option value="750000-1000000">$750,000 - $1,000,000</option>
             <option value="1000000-1500000">$1,000,000 - $1,500,000</option>
             <option value="1500000+">$1,500,000+</option>
+          </select>
+        </div>
+        
+        <div class="filter-group">
+          <label for="project-secondary-filter">Secondary Project</label>
+          <select id="project-secondary-filter" class="filter-select">
+            <option value="">All Projects</option>
+            <!-- Will be populated dynamically -->
+          </select>
+        </div>
+        
+        <div class="filter-group">
+          <label for="suburb-secondary-filter">Secondary Suburb</label>
+          <select id="suburb-secondary-filter" class="filter-select">
+            <option value="">All Suburbs</option>
+            <!-- Will be populated dynamically -->
           </select>
         </div>
       </div>
