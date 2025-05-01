@@ -657,6 +657,7 @@
     
     // Get all property data with proper null handling
     const id = property.id || '';
+    // Fix: Use both possible field names for listing type with consistent priority
     const rawListingType = props.hs_listing_type || props.cg_listing_type || '';
     const title = formatListingType(rawListingType);
     const project = props.cg_project || '';
@@ -668,9 +669,8 @@
     const neighborhood = props.hs_neighborhood || '';
     const suburb = props.hs_city || '';
     
-    // Check if it's a land listing
-    const isLandOnly = rawListingType.toLowerCase().includes('land only') || 
-                     rawListingType.toLowerCase() === 'land';
+    // Fix: Improved land listing detection to be more comprehensive
+    const isLandOnly = isLandListing(rawListingType);
     
     // Land details - prioritize these as we're a land developer
     const lotSize = props.hs_lot_size || '';
@@ -1175,7 +1175,9 @@
   function updatePageMetadata(property) {
     // Update page title
     const props = property.properties || {};
-    const title = formatListingType(props.hs_listing_type || '') + 
+    // Fix: Use both field names for listing type
+    const listingType = props.hs_listing_type || props.cg_listing_type || '';
+    const title = formatListingType(listingType) + 
                  (props.cg_project ? ` in ${props.cg_project}` : '') +
                  (props.cg_dp_lot ? ` - Lot ${props.cg_dp_lot}` : '') +
                  (props.cg_title ? ` - ${props.cg_title} Title` : '') +
@@ -1198,7 +1200,10 @@
     const registrationText = props.cg_registration_date ? `Registration date: ${formatDate(props.cg_registration_date)} ` : '';
     const suburbText = props.hs_city ? `in ${props.hs_city} ` : '';
     
-    const description = `${lotText}${frontageText}${titleText}${registrationText}${formatListingType(props.hs_listing_type || '')} ${suburbText}${props.cg_project ? `in ${props.cg_project}` : ''} ${props.cg_stage ? `Stage ${props.cg_stage}` : ''} ${props.cg_dp_lot ? `DP Lot ${props.cg_dp_lot}` : ''}`;
+    // Fix: Use both field names for listing type
+    const formattedListingType = formatListingType(props.hs_listing_type || props.cg_listing_type || '');
+    
+    const description = `${lotText}${frontageText}${titleText}${registrationText}${formattedListingType} ${suburbText}${props.cg_project ? `in ${props.cg_project}` : ''} ${props.cg_stage ? `Stage ${props.cg_stage}` : ''} ${props.cg_dp_lot ? `DP Lot ${props.cg_dp_lot}` : ''}`;
     metaDescription.setAttribute('content', description);
   }
   
@@ -1243,6 +1248,22 @@
       .split(/[_\s-]/)  // Split on underscore, space, or hyphen
       .map(word => word.charAt(0).toUpperCase() + word.slice(1))
       .join(' ');
+  }
+  
+  // NEW: Helper function to better detect land listings
+  function isLandListing(listingType) {
+    if (!listingType) return false;
+    
+    const rawType = String(listingType).toLowerCase();
+    
+    // More comprehensive check for land listings
+    return rawType === 'land' || 
+           rawType === 'hs_land' || 
+           rawType === 'cg_land' ||
+           rawType.includes('land only') || 
+           rawType.includes('land_only') || 
+           rawType.includes('land-only') ||
+           (rawType.includes('land') && !rawType.includes('house')) && !rawType.includes('package');
   }
   
   function formatPrice(price) {
