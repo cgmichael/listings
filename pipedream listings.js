@@ -24,7 +24,7 @@ export default defineComponent({
         "cg_status", "hs_price", "cg_build_list_price", "cg_listed_package_price", 
         "cg_land_release_price", "cg_land_type", "hs_lot_size", "cg_total_build_size", 
         "hs_bedrooms", "hs_bathrooms", "cg_car", "cg_house_type", "cg_facade", 
-        "cg_title_type", "hs_listing_type", "hs_address_1",
+        "cg_title", "hs_listing_type", "hs_address_1",
         
         // Location details
         "hs_city", "hs_neighborhood",
@@ -129,8 +129,8 @@ export default defineComponent({
       const availableStatuses = [...new Set(allResults.map(p => p.properties?.cg_status).filter(Boolean))];
       console.log("Available statuses in results:", JSON.stringify(availableStatuses));
       
-      // Log available title types for debugging
-      const availableTitleTypes = [...new Set(allResults.map(p => p.properties?.cg_title_type).filter(Boolean))];
+      // Log available title types for debugging - corrected field name to cg_title
+      const availableTitleTypes = [...new Set(allResults.map(p => p.properties?.cg_title).filter(Boolean))];
       console.log("Available title types:", JSON.stringify(availableTitleTypes));
       
       // Log available suburbs for debugging
