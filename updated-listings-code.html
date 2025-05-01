@@ -2306,8 +2306,7 @@
           const isNew = Math.random() > 0.8; // 20% chance to be marked as new
           
           // Check if it's a land listing
-          const isLandOnly = rawListingType.toLowerCase().includes('land only') || 
-                            rawListingType.toLowerCase() === 'land';
+          const isLandOnly = isLandListing(rawListingType);
           
           // UPDATED: Land size is first spec, show title type, aspect and registration date
           html += `
@@ -2567,6 +2566,22 @@
           .split(/[_\s-]/)  // Split on underscore, space, or hyphen
           .map(word => word.charAt(0).toUpperCase() + word.slice(1))
           .join(' ');
+      }
+      
+      // NEW: Improved helper function for land listing detection
+      function isLandListing(listingType) {
+        if (!listingType) return false;
+        
+        const rawType = String(listingType).toLowerCase();
+        
+        // More comprehensive check for land listings
+        return rawType === 'land' || 
+               rawType === 'hs_land' || 
+               rawType === 'cg_land' ||
+               rawType.includes('land only') || 
+               rawType.includes('land_only') || 
+               rawType.includes('land-only') ||
+               (rawType.includes('land') && !rawType.includes('house') && !rawType.includes('package'));
       }
       
       function formatPrice(price) {
