@@ -46,6 +46,8 @@ export default defineComponent({
       // If we still don't have an ID, return a mock property for testing
       if (!propertyId) {
         console.log("No property ID found in request, returning mock property");
+        
+        // Create a mock property with properly formatted values (no cg_ prefixes, capitalized values)
         return $.respond({
           status: 200,
           headers,
@@ -56,25 +58,25 @@ export default defineComponent({
               properties: {
                 hs_object_id: "mock-property",
                 name: "Mock Property",
-                cg_project: "Sample Project",
-                cg_stage: "1",
-                cg_dp_lot: "123",
-                cg_status: "cg_available",
+                project: "Sample Project", // cg_ prefix removed
+                stage: "1", // cg_ prefix removed
+                dp_lot: "123", // cg_ prefix removed
+                status: "Available", // cg_ prefix removed and capitalized
                 hs_price: "650000",
                 hs_bedrooms: "4",
                 hs_bathrooms: "2",
-                cg_car: "2",
-                cg_house_type: "Single Story",
+                car: "2", // cg_ prefix removed
+                house_type: "Single Story", // cg_ prefix removed
                 hs_listing_type: "House & Land Package",
-                cg_description: "This is a mock property since no ID was provided.",
-                cg_title: "Torrens",
-                cg_frontage: "15",
-                cg_depth: "32",
-                cg_aspect: "North",
+                description: "This is a mock property since no ID was provided.", // cg_ prefix removed
+                title: "Torrens", // cg_ prefix removed
+                frontage: "15", // cg_ prefix removed
+                depth: "32", // cg_ prefix removed
+                aspect: "North", // cg_ prefix removed
                 hs_lot_size: "450",
-                cg_land_type: "Corner",
-                cg_registration_date: "2024-06-15",
-                cg_storeys: "1",
+                land_type: "Corner", // cg_ prefix removed
+                registration_date: "2024-06-15", // cg_ prefix removed
+                storeys: "1", // cg_ prefix removed
                 hs_neighborhood: "Valley View",
                 hs_city: "Springfield"
               }
@@ -158,12 +160,40 @@ export default defineComponent({
         property = await response.json();
         console.log("Successfully parsed property data");
         
+        // Process property fields to remove cg_ prefixes and capitalize values
+        if (property.properties) {
+          const processedProps = {};
+          
+          // Process each property value
+          for (const [key, value] of Object.entries(property.properties)) {
+            if (key.startsWith('cg_')) {
+              // Create a new key without prefix
+              const newKey = key.replace('cg_', '');
+              
+              // Format and capitalize value if it's a string
+              let processedValue = value;
+              if (typeof value === 'string' && !value.match(/^\d+(\.\d+)?$/)) {
+                // Don't capitalize numbers
+                processedValue = formatValueWithCapitalization(value);
+              }
+              
+              processedProps[newKey] = processedValue;
+            } else {
+              // Keep non-cg properties as they are
+              processedProps[key] = value;
+            }
+          }
+          
+          // Replace original properties with processed ones
+          property.properties = processedProps;
+        }
+        
         // Log some key fields for debugging
         console.log(`Property ID: ${property.id}`);
-        console.log(`Property Type: ${property.properties?.hs_listing_type || property.properties?.cg_listing_type}`);
+        console.log(`Property Type: ${property.properties?.hs_listing_type || property.properties?.listing_type}`);
         console.log(`Property Suburb: ${property.properties?.hs_city}`);
-        console.log(`Property Storeys: ${property.properties?.cg_storeys}`);
-        console.log(`Property Title Type: ${property.properties?.cg_title}`);
+        console.log(`Property Storeys: ${property.properties?.storeys}`);
+        console.log(`Property Title Type: ${property.properties?.title}`);
       } catch (e) {
         console.error(`JSON parse error: ${e.message}`);
         return $.respond({
@@ -203,3 +233,14 @@ export default defineComponent({
     }
   }
 });
+
+// Helper function to format values with capitalization
+function formatValueWithCapitalization(value) {
+  if (!value) return '';
+  
+  // Split by underscores, spaces or hyphens
+  return String(value)
+    .split(/[_\s-]/)
+    .map(word => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase())
+    .join(' ');
+}
