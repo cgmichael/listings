@@ -163,6 +163,7 @@ export default defineComponent({
         console.log(`Property Type: ${property.properties?.hs_listing_type}`);
         console.log(`Property Suburb: ${property.properties?.hs_city}`);
         console.log(`Property Storeys: ${property.properties?.cg_storeys}`);
+        console.log(`Property Title Type: ${property.properties?.cg_title_type}`);
       } catch (e) {
         console.error(`JSON parse error: ${e.message}`);
         return $.respond({
