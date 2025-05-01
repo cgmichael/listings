@@ -1,0 +1,1234 @@
+<!-- Property Detail Module -->
+<div class="property-detail-container">
+  <!-- Loading state -->
+  <div class="loading-spinner" id="property-loading">
+    <div class="spinner"></div>
+    <p>Loading property details...</p>
+  </div>
+  
+  <!-- Error state -->
+  <div class="error-container" id="property-error" style="display: none;">
+    <h3>Error Loading Property</h3>
+    <p id="error-message"></p>
+    <button onclick="window.location.href='https://24160521.hs-sites.com/listings'">Return to Listings</button>
+  </div>
+  
+  <!-- Property content -->
+  <div id="property-content" style="display: none;"></div>
+</div>
+
+<style>
+  /* Loading spinner */
+  .loading-spinner {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 60px 0;
+  }
+  
+  .spinner {
+    width: 50px;
+    height: 50px;
+    border: 4px solid rgba(0, 0, 0, 0.1);
+    border-radius: 50%;
+    border-top-color: #bf9959;
+    animation: spin 1s ease-in-out infinite;
+    margin-bottom: 20px;
+  }
+  
+  @keyframes spin {
+    to {
+      transform: rotate(360deg);
+    }
+  }
+  
+  /* Error container */
+  .error-container {
+    text-align: center;
+    padding: 40px 20px;
+    background-color: #fff5f5;
+    border-radius: 10px;
+    border: 1px solid #fed7d7;
+    margin: 30px 0;
+  }
+  
+  .error-container h3 {
+    color: #e53e3e;
+    margin-bottom: 10px;
+  }
+  
+  .error-container button {
+    margin-top: 20px;
+    padding: 10px 20px;
+    background-color: #bf9959;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-weight: 600;
+    transition: background-color 0.2s;
+  }
+  
+  .error-container button:hover {
+    background-color: #a88349;
+  }
+  
+  /* Property detail styles */
+  .property-detail-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 30px 15px;
+  }
+  
+  .property-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: linear-gradient(to right, #f7f9fc, #edf2f7);
+    padding: 20px;
+    border-radius: 10px 10px 0 0;
+    border-bottom: 1px solid #e2e8f0;
+    position: relative;
+  }
+  
+  .property-status {
+    display: inline-block;
+    padding: 6px 12px;
+    border-radius: 20px;
+    font-weight: 600;
+    font-size: 14px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    background-color: #bf9959;
+    color: white;
+  }
+  
+  .property-status.available {
+    background-color: #48bb78;
+  }
+  
+  .property-status.under-offer {
+    background-color: #ed8936;
+  }
+  
+  .property-status.hold {
+    background-color: #ecc94b;
+    color: #1a202c;
+  }
+  
+  .property-status.exclusive {
+    background-color: #9f7aea;
+  }
+  
+  /* Title Type Badge */
+  .title-type-badge {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    background-color: #bf9959;
+    color: white;
+    padding: 5px 10px;
+    border-radius: 4px;
+    font-size: 14px;
+    font-weight: 600;
+  }
+  
+  .property-price {
+    font-size: 24px;
+    font-weight: 700;
+    color: #2d3748;
+    margin-right: 100px; /* Ensure space for the title type badge */
+  }
+  
+  .property-content {
+    background: white;
+    padding: 30px;
+    border-radius: 0 0 10px 10px;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
+  }
+  
+  .property-title {
+    margin: 0 0 15px 0;
+    font-size: 28px;
+    font-weight: 700;
+    color: #1a202c;
+    line-height: 1.2;
+  }
+  
+  .property-location {
+    margin-bottom: 20px;
+    color: #4a5568;
+    font-size: 16px;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 8px;
+    line-height: 1.8;
+  }
+  
+  .property-location i {
+    color: #bf9959;
+  }
+  
+  .property-neighborhood {
+    margin-bottom: 15px;
+    color: #4a5568;
+    font-size: 16px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  
+  .property-neighborhood i {
+    color: #bf9959;
+  }
+  
+  .property-suburb {
+    margin-bottom: 15px;
+    color: #4a5568;
+    font-size: 16px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  
+  .property-suburb i {
+    color: #bf9959;
+  }
+  
+  .property-description {
+    margin: 20px 0;
+    line-height: 1.6;
+    color: #4a5568;
+  }
+  
+  .property-specs-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 20px;
+    margin: 30px 0;
+    text-align: center;
+    padding: 20px;
+    background-color: #f7f9fc;
+    border-radius: 10px;
+  }
+  
+  .spec-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+  
+  .spec-item i {
+    font-size: 24px;
+    color: #bf9959;
+    margin-bottom: 8px;
+  }
+  
+  .spec-item span {
+    font-size: 22px;
+    font-weight: 600;
+    color: #2d3748;
+  }
+  
+  .spec-item label {
+    font-size: 14px;
+    color: #718096;
+    margin-top: 4px;
+  }
+  
+  .property-details {
+    margin: 30px 0;
+    border: 1px solid #e2e8f0;
+    border-radius: 10px;
+    overflow: hidden;
+  }
+  
+  .detail-row {
+    display: flex;
+    justify-content: space-between;
+    padding: 15px 20px;
+    border-bottom: 1px solid #edf2f7;
+  }
+  
+  .detail-row:last-child {
+    border-bottom: none;
+  }
+  
+  .detail-row:nth-child(odd) {
+    background-color: #f7f9fc;
+  }
+  
+  .detail-label {
+    font-weight: 500;
+    color: #718096;
+  }
+  
+  .detail-value {
+    font-weight: 600;
+    color: #2d3748;
+  }
+  
+  .property-features {
+    margin: 30px 0;
+  }
+  
+  .property-features h3 {
+    margin-bottom: 15px;
+    font-size: 20px;
+    color: #2d3748;
+  }
+  
+  .property-features ul {
+    list-style: none;
+    padding: 0;
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+    gap: 10px;
+  }
+  
+  .property-features li {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 8px 0;
+  }
+  
+  .property-features li i {
+    color: #48bb78;
+  }
+  
+  .property-cta {
+    margin-top: 30px;
+    display: flex;
+    justify-content: center;
+  }
+  
+  .property-cta button {
+    padding: 15px 25px;
+    border: none;
+    border-radius: 6px;
+    font-weight: 600;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    transition: background-color 0.2s;
+  }
+  
+  .back-button {
+    background-color: #e2e8f0;
+    color: #4a5568;
+  }
+  
+  .back-button:hover {
+    background-color: #cbd5e0;
+  }
+  
+  /* Land information highlight box */
+  .land-highlight-box {
+    background-color: #f0f9ff;
+    border-left: 4px solid #bf9959;
+    padding: 15px 20px;
+    margin: 25px 0;
+    border-radius: 0 10px 10px 0;
+  }
+  
+  .land-highlight-title {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    color: #2d3748;
+    font-weight: 700;
+    margin-bottom: 10px;
+  }
+  
+  .land-highlight-title i {
+    color: #bf9959;
+  }
+  
+  .land-highlight-details {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 15px;
+  }
+  
+  .land-detail-item {
+    display: flex;
+    flex-direction: column;
+  }
+  
+  .land-detail-label {
+    color: #718096;
+    font-size: 13px;
+  }
+  
+  .land-detail-value {
+    font-weight: 600;
+    color: #2d3748;
+    font-size: 16px;
+  }
+  
+  /* Registration Date Highlight */
+  .registration-date {
+    background-color: #edfcef;
+    border-left: 4px solid #48bb78;
+    padding: 15px 20px;
+    margin: 20px 0;
+    border-radius: 0 10px 10px 0;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  
+  .registration-date i {
+    color: #48bb78;
+    font-size: 20px;
+  }
+  
+  .registration-date-content {
+    flex: 1;
+  }
+  
+  .registration-date-label {
+    font-weight: 600;
+    color: #2d3748;
+    margin-bottom: 4px;
+  }
+  
+  .registration-date-value {
+    font-size: 18px;
+    font-weight: 700;
+    color: #48bb78;
+  }
+  
+  /* Documents Section */
+  .property-documents {
+    margin: 30px 0;
+    background-color: #f7f9fc;
+    padding: 20px;
+    border-radius: 10px;
+  }
+  
+  .property-documents h3 {
+    margin-bottom: 15px;
+    font-size: 20px;
+    color: #2d3748;
+  }
+  
+  .documents-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 15px;
+  }
+  
+  .document-card {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    background: white;
+    padding: 15px;
+    border-radius: 8px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+    transition: transform 0.2s, box-shadow 0.2s;
+    text-decoration: none;
+  }
+  
+  .document-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  }
+  
+  .document-icon {
+    font-size: 32px;
+    color: #bf9959;
+    margin-bottom: 10px;
+  }
+  
+  .document-title {
+    font-weight: 600;
+    color: #2d3748;
+    text-align: center;
+    margin-bottom: 5px;
+  }
+  
+  /* Tabs for organizing content */
+  .property-tabs {
+    display: flex;
+    border-bottom: 1px solid #e2e8f0;
+    margin: 30px 0 0;
+    overflow-x: auto;
+    scrollbar-width: none;
+  }
+  
+  .property-tabs::-webkit-scrollbar {
+    display: none;
+  }
+  
+  .property-tab {
+    padding: 12px 20px;
+    font-weight: 600;
+    color: #718096;
+    cursor: pointer;
+    border-bottom: 3px solid transparent;
+    white-space: nowrap;
+  }
+  
+  .property-tab.active {
+    color: #bf9959;
+    border-bottom-color: #bf9959;
+  }
+  
+  .tab-content {
+    display: none;
+    padding: 25px 0;
+  }
+  
+  .tab-content.active {
+    display: block;
+  }
+  
+  /* Timeline for dates */
+  .property-timeline {
+    margin: 20px 0;
+  }
+  
+  .timeline-item {
+    display: flex;
+    margin-bottom: 15px;
+  }
+  
+  .timeline-date {
+    flex: 0 0 180px;
+    font-weight: 600;
+    color: #2d3748;
+  }
+  
+  .timeline-description {
+    flex: 1;
+    color: #4a5568;
+  }
+  
+  /* Responsive design */
+  @media (max-width: 768px) {
+    .property-header {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 15px;
+    }
+    
+    .property-price {
+      margin-right: 0;
+    }
+    
+    .title-type-badge {
+      position: static;
+      display: inline-block;
+      margin-top: 10px;
+    }
+    
+    .property-specs-grid {
+      grid-template-columns: repeat(2, 1fr);
+    }
+    
+    .property-features ul {
+      grid-template-columns: 1fr;
+    }
+    
+    .property-cta {
+      flex-direction: column;
+      align-items: center;
+    }
+    
+    .documents-grid {
+      grid-template-columns: repeat(2, 1fr);
+    }
+    
+    .timeline-item {
+      flex-direction: column;
+      margin-bottom: 20px;
+    }
+    
+    .timeline-date {
+      margin-bottom: 5px;
+    }
+    
+    .land-highlight-details {
+      grid-template-columns: 1fr;
+    }
+  }
+  
+  @media (max-width: 480px) {
+    .property-specs-grid {
+      grid-template-columns: 1fr;
+    }
+    
+    .documents-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>
+
+<script>
+  // Initialize on document ready
+  document.addEventListener('DOMContentLoaded', function() {
+    loadPropertyDetails();
+  });
+  
+  async function loadPropertyDetails() {
+    try {
+      // Extract property ID from URL query parameter
+      const urlParams = new URLSearchParams(window.location.search);
+      const propertyId = urlParams.get('id');
+      
+      if (!propertyId) {
+        throw new Error("Property ID not found in URL");
+      }
+      
+      // Show loading state
+      document.getElementById('property-loading').style.display = 'flex';
+      
+      // Call your Pipedream endpoint
+      const response = await fetch(`https://eoraj58ahbnwfmw.m.pipedream.net?id=${propertyId}`);
+      const data = await response.json();
+      
+      if (!data.success || !data.property) {
+        throw new Error(data.error || "Failed to load property details");
+      }
+      
+      // Hide loading state
+      document.getElementById('property-loading').style.display = 'none';
+      
+      // Render property details
+      renderPropertyDetails(data.property);
+      
+      // Show content
+      document.getElementById('property-content').style.display = 'block';
+      
+      // Update page metadata for SEO
+      updatePageMetadata(data.property);
+      
+    } catch (error) {
+      // Show error state
+      document.getElementById('property-loading').style.display = 'none';
+      document.getElementById('property-error').style.display = 'block';
+      document.getElementById('error-message').textContent = error.message;
+      console.error('Error loading property:', error);
+    }
+  }
+  
+  function renderPropertyDetails(property) {
+    const props = property.properties || {};
+    const detailsContainer = document.getElementById('property-content');
+    
+    // Get all property data with proper null handling
+    const id = property.id || '';
+    const rawListingType = props.hs_listing_type || props.cg_listing_type || '';
+    const title = formatListingType(rawListingType);
+    const project = props.cg_project || '';
+    const stage = props.cg_stage || '';
+    const dpLot = props.cg_dp_lot || '';
+    const mpLot = props.cg_mp_lot || '';
+    const status = formatFieldName(props.cg_status || '');
+    const statusClass = getStatusClass(props.cg_status || '');
+    const neighborhood = props.hs_neighborhood || '';
+    const suburb = props.hs_city || '';
+    
+    // Check if it's a land listing
+    const isLandOnly = rawListingType.toLowerCase().includes('land only') || 
+                     rawListingType.toLowerCase() === 'land';
+    
+    // Land details - prioritize these as we're a land developer
+    const lotSize = props.hs_lot_size || '';
+    const landShape = formatFieldName(props.cg_land_type || '');
+    const orientation = props.cg_orientation || '';
+    const aspect = props.cg_aspect || ''; 
+    const frontage = props.cg_frontage || '';
+    const depth = props.cg_depth || '';
+    const setback = props.cg_setback || '';
+    const titleType = props.cg_title_type || '';
+    
+    // Building details (secondary information)
+    const bedrooms = props.hs_bedrooms || '0';
+    const bathrooms = props.hs_bathrooms || '0';
+    const carSpaces = props.cg_car || '0';
+    const buildSize = props.cg_total_build_size || '';
+    const houseType = formatFieldName(props.cg_house_type || '');
+    const address = props.hs_address_1 || '';
+    const facade = props.cg_facade || '';
+    const constructionType = formatFieldName(props.cg_construction_type || '');
+    const ceilingHeight = props.cg_ceiling_height || '';
+    const energyRating = props.cg_energy_rating || '';
+    const storeys = props.cg_storeys || '';
+    
+    // Get price from various fields
+    let price = props.cg_listed_package_price || props.hs_price || 
+               props.cg_build_list_price || props.cg_land_release_price || '';
+    
+    // Dates
+    const estimatedCompletion = props.cg_estimated_completion || '';
+    const settlementDate = props.cg_settlement_date || '';
+    const landTitleDate = props.cg_land_title_date || '';
+    const registrationDate = props.cg_registration_date || '';
+    
+    // Content
+    const description = props.cg_description || '';
+    const features = props.cg_features_list || '';
+    
+    // Document URLs
+    const brochureUrl = props.cg_brochure_url || '';
+    const masterplanUrl = props.cg_masterplan_url || '';
+    const floorplanUrl = props.cg_floorplan_url || '';
+    const contractUrl = props.cg_contract_url || '';
+    const inclusionsUrl = props.cg_inclusions_url || '';
+    const specificationsUrl = props.cg_specifications_url || '';
+    
+    // Check if we have any documents
+    const hasDocuments = brochureUrl || masterplanUrl || floorplanUrl || 
+                        contractUrl || inclusionsUrl || specificationsUrl;
+    
+    // Check if we have dates to display
+    const hasDates = estimatedCompletion || settlementDate || landTitleDate || registrationDate;
+    
+    // Create the HTML structure for the property details
+    let html = `
+      <div class="property-header">
+        <div class="property-status ${statusClass}">${status}</div>
+        <div class="property-price">${formatPrice(price)}</div>
+        ${titleType ? `<div class="title-type-badge">${titleType}</div>` : ''}
+      </div>
+      
+      <div class="property-content">
+        <h1 class="property-title">${title}</h1>
+        
+        <div class="property-location">
+          <i class="fas fa-map-marker-alt"></i>
+          ${project ? `<strong>${formatFieldName(project)}</strong>` : ''}
+          ${stage ? ` • <strong>Stage:</strong> ${formatFieldName(stage)}` : ''}
+          ${dpLot ? ` • <strong>DP Lot:</strong> ${dpLot}` : ''}
+          ${mpLot ? ` • <strong>MP Lot:</strong> ${mpLot}` : ''}
+          ${address ? ` • ${address}` : ''}
+        </div>
+        
+        ${suburb ? `
+        <div class="property-suburb">
+          <i class="fas fa-city"></i>
+          <strong>Suburb:</strong> ${suburb}
+        </div>` : ''}
+        
+        ${neighborhood ? `
+        <div class="property-neighborhood">
+          <i class="fas fa-building"></i>
+          <strong>Neighborhood:</strong> ${neighborhood}
+        </div>` : ''}
+        
+        <!-- Registration Date Display -->
+        ${registrationDate ? `
+        <div class="registration-date">
+          <i class="fas fa-calendar-check"></i>
+          <div class="registration-date-content">
+            <div class="registration-date-label">Registration Date</div>
+            <div class="registration-date-value">${formatDate(registrationDate)}</div>
+          </div>
+        </div>` : ''}
+        
+        <!-- Land Highlights Box -->
+        <div class="land-highlight-box">
+          <div class="land-highlight-title">
+            <i class="fas fa-ruler-combined"></i>
+            <span>Land Details</span>
+          </div>
+          
+          <div class="land-highlight-details">
+            ${lotSize ? `
+            <div class="land-detail-item">
+              <div class="land-detail-label">Land Size</div>
+              <div class="land-detail-value">${lotSize} m²</div>
+            </div>` : ''}
+            
+            ${frontage ? `
+            <div class="land-detail-item">
+              <div class="land-detail-label">Frontage</div>
+              <div class="land-detail-value">${frontage} m</div>
+            </div>` : ''}
+            
+            ${depth ? `
+            <div class="land-detail-item">
+              <div class="land-detail-label">Depth</div>
+              <div class="land-detail-value">${depth} m</div>
+            </div>` : ''}
+            
+            ${titleType ? `
+            <div class="land-detail-item">
+              <div class="land-detail-label">Title Type</div>
+              <div class="land-detail-value">${titleType}</div>
+            </div>` : ''}
+            
+            ${landShape ? `
+            <div class="land-detail-item">
+              <div class="land-detail-label">Land Shape</div>
+              <div class="land-detail-value">${landShape}</div>
+            </div>` : ''}
+            
+            ${aspect ? `
+            <div class="land-detail-item">
+              <div class="land-detail-label">Aspect</div>
+              <div class="land-detail-value">${aspect}</div>
+            </div>` : ''}
+          </div>
+        </div>
+        
+        <!-- Display the Land Title Date prominently if available -->
+        ${landTitleDate ? `
+        <div class="timeline-item" style="margin: 20px 0; padding: 10px 15px; background-color: #f0f9ff; border-radius: 6px;">
+          <div class="timeline-date">Land Title Date:</div>
+          <div class="timeline-description" style="font-weight: 600; color: #2d3748;">${formatDate(landTitleDate)}</div>
+        </div>` : ''}
+        
+        <!-- Add description if available -->
+        ${description ? `
+        <div class="property-description">
+          ${description}
+        </div>` : ''}
+        
+        <!-- Key specs - emphasize land size -->
+        <div class="property-specs-grid">
+          ${lotSize ? `
+          <div class="spec-item">
+            <i class="fas fa-ruler-combined"></i>
+            <span>${lotSize}</span>
+            <label>Land Size (m²)</label>
+          </div>` : ''}
+          ${frontage ? `
+          <div class="spec-item">
+            <i class="fas fa-arrows-alt-h"></i>
+            <span>${frontage}</span>
+            <label>Frontage (m)</label>
+          </div>` : ''}
+          ${depth ? `
+          <div class="spec-item">
+            <i class="fas fa-arrows-alt-v"></i>
+            <span>${depth}</span>
+            <label>Depth (m)</label>
+          </div>` : ''}
+          ${aspect ? `
+          <div class="spec-item">
+            <i class="fas fa-compass"></i>
+            <span>${aspect}</span>
+            <label>Aspect</label>
+          </div>` : ''}
+          ${titleType ? `
+          <div class="spec-item">
+            <i class="fas fa-file-contract"></i>
+            <span>${titleType}</span>
+            <label>Title Type</label>
+          </div>` : ''}
+          ${storeys ? `
+          <div class="spec-item">
+            <i class="fas fa-building"></i>
+            <span>${storeys}</span>
+            <label>Storeys</label>
+          </div>` : ''}
+        </div>`;
+    
+    // Add tabbed sections for better organization - Land Info first!
+    html += `
+      <div class="property-tabs">
+        <div class="property-tab active" onclick="switchTab('land')">Land Details</div>
+        ${hasDates ? `<div class="property-tab" onclick="switchTab('timeline')">Timeline</div>` : ''}
+        ${!isLandOnly && (bedrooms !== '0' || bathrooms !== '0' || carSpaces !== '0' || buildSize || houseType || facade) ? 
+          `<div class="property-tab" onclick="switchTab('building')">Building Details</div>` : ''}
+        ${features ? `<div class="property-tab" onclick="switchTab('features')">Features</div>` : ''}
+        ${hasDocuments ? `<div class="property-tab" onclick="switchTab('documents')">Documents</div>` : ''}
+      </div>`;
+    
+    // Land information tab - now the primary tab
+    html += `
+      <div id="land-tab" class="tab-content active">
+        <div class="property-details">
+          ${titleType ? `
+          <div class="detail-row">
+            <div class="detail-label">Title Type</div>
+            <div class="detail-value">${titleType}</div>
+          </div>` : ''}
+          ${project ? `
+          <div class="detail-row">
+            <div class="detail-label">Development</div>
+            <div class="detail-value">${formatFieldName(project)}</div>
+          </div>` : ''}
+          ${suburb ? `
+          <div class="detail-row">
+            <div class="detail-label">Suburb</div>
+            <div class="detail-value">${suburb}</div>
+          </div>` : ''}
+          ${neighborhood ? `
+          <div class="detail-row">
+            <div class="detail-label">Neighborhood</div>
+            <div class="detail-value">${neighborhood}</div>
+          </div>` : ''}
+          ${stage ? `
+          <div class="detail-row">
+            <div class="detail-label">Stage</div>
+            <div class="detail-value">${formatFieldName(stage)}</div>
+          </div>` : ''}
+          ${lotSize ? `
+          <div class="detail-row">
+            <div class="detail-label">Land Size</div>
+            <div class="detail-value">${lotSize}m²</div>
+          </div>` : ''}
+          ${landShape ? `
+          <div class="detail-row">
+            <div class="detail-label">Land Shape</div>
+            <div class="detail-value">${landShape}</div>
+          </div>` : ''}
+          ${frontage ? `
+          <div class="detail-row">
+            <div class="detail-label">Frontage</div>
+            <div class="detail-value">${frontage}m</div>
+          </div>` : ''}
+          ${depth ? `
+          <div class="detail-row">
+            <div class="detail-label">Depth</div>
+            <div class="detail-value">${depth}m</div>
+          </div>` : ''}
+          ${orientation ? `
+          <div class="detail-row">
+            <div class="detail-label">Orientation</div>
+            <div class="detail-value">${orientation}</div>
+          </div>` : ''}
+          ${aspect ? `
+          <div class="detail-row">
+            <div class="detail-label">Aspect</div>
+            <div class="detail-value">${aspect}</div>
+          </div>` : ''}
+          ${setback ? `
+          <div class="detail-row">
+            <div class="detail-label">Setback</div>
+            <div class="detail-value">${setback}m</div>
+          </div>` : ''}
+          ${address ? `
+          <div class="detail-row">
+            <div class="detail-label">Address</div>
+            <div class="detail-value">${address}</div>
+          </div>` : ''}
+          ${dpLot ? `
+          <div class="detail-row">
+            <div class="detail-label">DP Lot</div>
+            <div class="detail-value">${dpLot}</div>
+          </div>` : ''}
+          ${mpLot ? `
+          <div class="detail-row">
+            <div class="detail-label">MP Lot</div>
+            <div class="detail-value">${mpLot}</div>
+          </div>` : ''}
+        </div>
+      </div>`;
+    
+    // Timeline tab (if we have dates)
+    if (hasDates) {
+      html += `
+        <div id="timeline-tab" class="tab-content">
+          <div class="property-timeline">
+            ${registrationDate ? `
+            <div class="timeline-item">
+              <div class="timeline-date">Registration Date</div>
+              <div class="timeline-description">${formatDate(registrationDate)}</div>
+            </div>` : ''}
+            
+            ${landTitleDate ? `
+            <div class="timeline-item">
+              <div class="timeline-date">Land Title Date</div>
+              <div class="timeline-description">${formatDate(landTitleDate)}</div>
+            </div>` : ''}
+            
+            ${estimatedCompletion ? `
+            <div class="timeline-item">
+              <div class="timeline-date">Estimated Completion</div>
+              <div class="timeline-description">${formatDate(estimatedCompletion)}</div>
+            </div>` : ''}
+            
+            ${settlementDate ? `
+            <div class="timeline-item">
+              <div class="timeline-date">Settlement Date</div>
+              <div class="timeline-description">${formatDate(settlementDate)}</div>
+            </div>` : ''}
+          </div>
+        </div>`;
+    }
+    
+    // Building details tab - only show if we have building details and it's not land-only
+    if (!isLandOnly && (bedrooms !== '0' || bathrooms !== '0' || carSpaces !== '0' || buildSize || houseType || facade)) {
+      html += `
+        <div id="building-tab" class="tab-content">
+          <div class="property-details">
+            <div class="detail-row">
+              <div class="detail-label">Listing Type</div>
+              <div class="detail-value">${title}</div>
+            </div>
+            ${buildSize ? `
+            <div class="detail-row">
+              <div class="detail-label">Build Size</div>
+              <div class="detail-value">${buildSize}m²</div>
+            </div>` : ''}
+            ${houseType ? `
+            <div class="detail-row">
+              <div class="detail-label">House Type</div>
+              <div class="detail-value">${houseType}</div>
+            </div>` : ''}
+            ${storeys ? `
+            <div class="detail-row">
+              <div class="detail-label">Storeys</div>
+              <div class="detail-value">${storeys}</div>
+            </div>` : ''}
+            ${bedrooms !== '0' ? `
+            <div class="detail-row">
+              <div class="detail-label">Bedrooms</div>
+              <div class="detail-value">${bedrooms}</div>
+            </div>` : ''}
+            ${bathrooms !== '0' ? `
+            <div class="detail-row">
+              <div class="detail-label">Bathrooms</div>
+              <div class="detail-value">${bathrooms}</div>
+            </div>` : ''}
+            ${carSpaces !== '0' ? `
+            <div class="detail-row">
+              <div class="detail-label">Car Spaces</div>
+              <div class="detail-value">${carSpaces}</div>
+            </div>` : ''}
+            ${facade ? `
+            <div class="detail-row">
+              <div class="detail-label">Facade</div>
+              <div class="detail-value">${formatFieldName(facade)}</div>
+            </div>` : ''}
+            ${constructionType ? `
+            <div class="detail-row">
+              <div class="detail-label">Construction Type</div>
+              <div class="detail-value">${constructionType}</div>
+            </div>` : ''}
+            ${ceilingHeight ? `
+            <div class="detail-row">
+              <div class="detail-label">Ceiling Height</div>
+              <div class="detail-value">${ceilingHeight}</div>
+            </div>` : ''}
+            ${energyRating ? `
+            <div class="detail-row">
+              <div class="detail-label">Energy Rating</div>
+              <div class="detail-value">${energyRating}</div>
+            </div>` : ''}
+          </div>
+        </div>`;
+    }
+    
+    // Features tab (if we have features)
+    if (features) {
+      html += `
+        <div id="features-tab" class="tab-content">
+          <div class="property-features">
+            <ul>
+              ${features.split(',').map(feature => 
+                `<li><i class="fas fa-check"></i> ${feature.trim()}</li>`
+              ).join('')}
+            </ul>
+          </div>
+        </div>`;
+    }
+    
+    // Documents tab (if we have documents)
+    if (hasDocuments) {
+      html += `
+        <div id="documents-tab" class="tab-content">
+          <div class="property-documents">
+            <div class="documents-grid">
+              ${masterplanUrl ? `
+              <a href="${masterplanUrl}" class="document-card" target="_blank">
+                <div class="document-icon"><i class="far fa-map"></i></div>
+                <div class="document-title">Master Plan</div>
+              </a>` : ''}
+              
+              ${brochureUrl ? `
+              <a href="${brochureUrl}" class="document-card" target="_blank">
+                <div class="document-icon"><i class="far fa-file-pdf"></i></div>
+                <div class="document-title">Property Brochure</div>
+              </a>` : ''}
+              
+              ${floorplanUrl ? `
+              <a href="${floorplanUrl}" class="document-card" target="_blank">
+                <div class="document-icon"><i class="far fa-building"></i></div>
+                <div class="document-title">Floor Plan</div>
+              </a>` : ''}
+              
+              ${contractUrl ? `
+              <a href="${contractUrl}" class="document-card" target="_blank">
+                <div class="document-icon"><i class="far fa-file-alt"></i></div>
+                <div class="document-title">Contract</div>
+              </a>` : ''}
+              
+              ${inclusionsUrl ? `
+              <a href="${inclusionsUrl}" class="document-card" target="_blank">
+                <div class="document-icon"><i class="far fa-list-alt"></i></div>
+                <div class="document-title">Inclusions</div>
+              </a>` : ''}
+              
+              ${specificationsUrl ? `
+              <a href="${specificationsUrl}" class="document-card" target="_blank">
+                <div class="document-icon"><i class="far fa-file-code"></i></div>
+                <div class="document-title">Specifications</div>
+              </a>` : ''}
+            </div>
+          </div>
+        </div>`;
+    }
+    
+    // Add Back to Listings button with the correct URL
+    html += `
+      <div class="property-cta">
+        <button class="back-button" onclick="window.location.href='https://24160521.hs-sites.com/listings'" aria-label="Return to listings">
+          <i class="fas fa-arrow-left"></i> Back to Listings
+        </button>
+      </div>`;
+    
+    // Close containers
+    html += `</div>`;
+    
+    // Set the content
+    detailsContainer.innerHTML = html;
+  }
+  
+  // Helper function to get proper status class
+  function getStatusClass(status) {
+    if (!status) return '';
+    
+    const statusMap = {
+      'cg_available': 'available',
+      'cg_under_offer': 'under-offer',
+      'cg_hold': 'hold',
+      'cg_exclusive': 'exclusive'
+    };
+    
+    return statusMap[status] || status.replace('cg_', '').toLowerCase();
+  }
+  
+  // Tab switching function
+  function switchTab(tabName) {
+    // Hide all tab contents
+    const tabContents = document.querySelectorAll('.tab-content');
+    tabContents.forEach(tab => tab.classList.remove('active'));
+    
+    // Deactivate all tabs
+    const tabs = document.querySelectorAll('.property-tab');
+    tabs.forEach(tab => tab.classList.remove('active'));
+    
+    // Activate the selected tab
+    document.getElementById(`${tabName}-tab`).classList.add('active');
+    
+    // Activate the clicked tab button
+    const activeTab = Array.from(tabs).find(tab => 
+      tab.textContent.toLowerCase().includes(tabName.toLowerCase())
+    );
+    if (activeTab) activeTab.classList.add('active');
+  }
+  
+  function updatePageMetadata(property) {
+    // Update page title
+    const props = property.properties || {};
+    const title = formatListingType(props.hs_listing_type || '') + 
+                 (props.cg_project ? ` in ${props.cg_project}` : '') +
+                 (props.cg_dp_lot ? ` - Lot ${props.cg_dp_lot}` : '') +
+                 (props.cg_title_type ? ` - ${props.cg_title_type} Title` : '') +
+                 (props.hs_neighborhood ? ` - ${props.hs_neighborhood}` : '') +
+                 (props.hs_city ? ` - ${props.hs_city}` : '');
+    
+    document.title = title;
+    
+    // Update meta description - focus on land aspects for SEO
+    let metaDescription = document.querySelector('meta[name="description"]');
+    if (!metaDescription) {
+      metaDescription = document.createElement('meta');
+      metaDescription.setAttribute('name', 'description');
+      document.head.appendChild(metaDescription);
+    }
+    
+    const lotText = props.hs_lot_size ? `${props.hs_lot_size}m² ` : '';
+    const frontageText = props.cg_frontage ? `${props.cg_frontage}m frontage ` : '';
+    const titleText = props.cg_title_type ? `${props.cg_title_type} title ` : '';
+    const registrationText = props.cg_registration_date ? `Registration date: ${formatDate(props.cg_registration_date)} ` : '';
+    const suburbText = props.hs_city ? `in ${props.hs_city} ` : '';
+    
+    const description = `${lotText}${frontageText}${titleText}${registrationText}${formatListingType(props.hs_listing_type || '')} ${suburbText}${props.cg_project ? `in ${props.cg_project}` : ''} ${props.cg_stage ? `Stage ${props.cg_stage}` : ''} ${props.cg_dp_lot ? `DP Lot ${props.cg_dp_lot}` : ''}`;
+    metaDescription.setAttribute('content', description);
+  }
+  
+  // Formatting helper functions
+  function formatFieldName(fieldName) {
+    if (!fieldName) return '';
+    return String(fieldName).replace(/^(cg_|hs_)/, '')
+      .split('_')
+      .map(word => word.charAt(0).toUpperCase() + word.slice(1))
+      .join(' ');
+  }
+  
+  function formatListingType(listingType) {
+    if (!listingType) return 'Property';
+    
+    // Convert to string and lowercase for consistent comparison
+    const rawType = String(listingType).toLowerCase();
+    
+    // Remove prefixes like cg_ or hs_
+    const cleanType = rawType.replace(/^(cg_|hs_)/, '');
+    
+    // Handle specific cases
+    if (cleanType === 'land') {
+      return 'Land';
+    }
+    
+    if (cleanType === 'house' || cleanType.includes('house_and_land') || cleanType.includes('house-and-land')) {
+      return 'House and Land';
+    }
+    
+    if (cleanType === 'townhouse') {
+      return 'Townhouse';
+    }
+    
+    if (cleanType === 'apartment') {
+      return 'Apartment';
+    }
+    
+    // Default case: capitalize first letter of each word
+    return cleanType
+      .split(/[_\s-]/)  // Split on underscore, space, or hyphen
+      .map(word => word.charAt(0).toUpperCase() + word.slice(1))
+      .join(' ');
+  }
+  
+  function formatPrice(price) {
+    if (!price) return 'Contact for pricing';
+    const numericPrice = String(price).replace(/[^\d.]/g, '');
+    if (!numericPrice) return 'Contact for pricing';
+    return '$' + parseFloat(numericPrice).toLocaleString();
+  }
+  
+  function formatDate(dateValue) {
+    if (!dateValue) return 'Not specified';
+    
+    // Handle different date formats
+    let date;
+    
+    // If it's a timestamp
+    if (!isNaN(dateValue)) {
+      date = new Date(parseInt(dateValue));
+    } else {
+      // Try to parse as ISO date
+      date = new Date(dateValue);
+    }
+    
+    // Check if date is valid
+    if (isNaN(date.getTime())) {
+      return dateValue; // Return original if not parseable
+    }
+    
+    // Format the date
+    const options = { year: 'numeric', month: 'long', day: 'numeric' };
+    return date.toLocaleDateString('en-AU', options);
+  }
+</script>

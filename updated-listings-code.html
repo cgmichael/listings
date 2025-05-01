@@ -1,0 +1,2620 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Property Listings</title>
+  <!-- Font Awesome for icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+  <style>
+    /* Reset and base styles */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen-Sans, Ubuntu, Cantarell, "Helvetica Neue", sans-serif;
+      color: #333;
+      line-height: 1.6;
+      background-color: #f9fafb;
+    }
+    
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 30px 15px;
+    }
+    
+    h1, h2, h3, h4 {
+      color: #1a202c;
+    }
+    
+    /* Property Listings Container */
+    #properties-container {
+      margin: 20px 0;
+    }
+    
+    /* Filters and Search Section */
+    .property-filters-container {
+      margin-bottom: 30px;
+      background-color: white;
+      border-radius: 10px;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+      padding: 20px;
+    }
+    
+    .property-filters-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+    }
+    
+    .property-filters-title {
+      font-size: 18px;
+      font-weight: 600;
+    }
+    
+    .property-filters-toggle {
+      background: none;
+      border: none;
+      color: #bf9959; /* Changed from #3182ce */
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 5px;
+    }
+    
+    .property-filters {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 16px;
+    }
+    
+    .filter-group {
+      flex: 1;
+      min-width: 200px;
+    }
+    
+    .filter-group label {
+      display: block;
+      margin-bottom: 8px;
+      font-weight: 600;
+      color: #4a5568;
+      font-size: 14px;
+    }
+    
+    .filter-select {
+      width: 100%;
+      padding: 10px 12px;
+      border: 1px solid #e2e8f0;
+      border-radius: 6px;
+      font-size: 15px;
+      color: #2d3748;
+      background-color: #fff;
+      transition: border-color 0.2s, box-shadow 0.2s;
+    }
+    
+    .filter-select:focus {
+      border-color: #bf9959; /* Changed from #3182ce */
+      box-shadow: 0 0 0 3px rgba(191, 153, 89, 0.2); /* Changed from rgba(49, 130, 206, 0.2) */
+      outline: none;
+    }
+    
+    .search-bar {
+      flex: 1;
+      min-width: 300px;
+      position: relative;
+    }
+    
+    .search-input-container {
+      display: flex;
+      position: relative;
+    }
+    
+    .search-bar input {
+      flex: 1;
+      width: 100%;
+      padding: 10px 12px;
+      padding-left: 36px;
+      border: 1px solid #e2e8f0;
+      border-radius: 6px 0 0 6px;
+      font-size: 15px;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' fill='%234a5568' viewBox='0 0 16 16'%3E%3Cpath d='M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001c.03.04.062.078.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1.007 1.007 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0z'%3E%3C/path%3E%3C/svg%3E");
+      background-repeat: no-repeat;
+      background-position: 10px center;
+      transition: border-color 0.2s, box-shadow 0.2s;
+    }
+    
+    .search-bar input:focus {
+      border-color: #bf9959; /* Changed from #3182ce */
+      box-shadow: 0 0 0 3px rgba(191, 153, 89, 0.2); /* Changed from rgba(49, 130, 206, 0.2) */
+      outline: none;
+    }
+    
+    .search-button {
+      background-color: #bf9959; /* Changed from #3182ce */
+      color: white;
+      border: none;
+      border-radius: 0 6px 6px 0;
+      padding: 0 20px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background-color 0.2s;
+    }
+    
+    .search-button:hover {
+      background-color: #a88349; /* Changed from #2c5282 */
+    }
+    
+    .filter-buttons {
+      display: flex;
+      justify-content: space-between;
+      margin-top: 20px;
+      gap: 10px;
+    }
+    
+    .filter-clear-button {
+      padding: 8px 16px;
+      background-color: #e2e8f0;
+      color: #4a5568;
+      border: none;
+      border-radius: 6px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background-color 0.2s;
+    }
+    
+    .filter-clear-button:hover {
+      background-color: #cbd5e0;
+    }
+    
+    .filter-apply-button {
+      padding: 8px 16px;
+      background-color: #bf9959; /* Changed from #3182ce */
+      color: white;
+      border: none;
+      border-radius: 6px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background-color 0.2s;
+    }
+    
+    .filter-apply-button:hover {
+      background-color: #a88349; /* Changed from #2c5282 */
+    }
+    
+    /* Range Slider Styles */
+    .range-slider {
+      width: 100%;
+      margin-top: 10px;
+    }
+    
+    .range-slider-container {
+      position: relative;
+      height: 30px;
+    }
+    
+    .range-slider-rail {
+      position: absolute;
+      width: 100%;
+      height: 6px;
+      background-color: #e2e8f0;
+      border-radius: 3px;
+      top: 50%;
+      transform: translateY(-50%);
+    }
+    
+    .range-slider-track {
+      position: absolute;
+      height: 6px;
+      background-color: #bf9959; /* Changed from #3182ce */
+      border-radius: 3px;
+      top: 50%;
+      transform: translateY(-50%);
+    }
+    
+    .range-slider-handle {
+      position: absolute;
+      width: 18px;
+      height: 18px;
+      background-color: white;
+      border: 2px solid #bf9959; /* Changed from #3182ce */
+      border-radius: 50%;
+      top: 50%;
+      transform: translate(-50%, -50%);
+      cursor: pointer;
+      transition: box-shadow 0.2s;
+    }
+    
+    .range-slider-handle:hover {
+      box-shadow: 0 0 0 5px rgba(191, 153, 89, 0.2); /* Changed from rgba(49, 130, 206, 0.2) */
+    }
+    
+    .range-slider-values {
+      display: flex;
+      justify-content: space-between;
+      margin-top: 5px;
+      font-size: 13px;
+      color: #718096;
+    }
+    
+    /* Active Filter Pills */
+    .active-filters {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 20px;
+    }
+    
+    .filter-pill {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 6px 12px;
+      background-color: #f7f1e6; /* Changed from #e6f7ff */
+      color: #bf9959; /* Changed from #1890ff */
+      border-radius: 16px;
+      font-size: 13px;
+      font-weight: 600;
+    }
+    
+    .filter-pill-remove {
+      cursor: pointer;
+      color: #8c6d3f; /* Changed from #096dd9 */
+      font-size: 14px;
+    }
+    
+    /* Sorting Control */
+    .sorting-container {
+      display: flex;
+      align-items: center;
+      margin-bottom: 15px;
+      padding: 12px 15px;
+      background-color: white;
+      border-radius: 8px;
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+    }
+    
+    .sorting-label {
+      font-weight: 600;
+      color: #4a5568;
+      margin-right: 10px;
+    }
+    
+    .sorting-select {
+      padding: 8px 12px;
+      border: 1px solid #e2e8f0;
+      border-radius: 6px;
+      font-size: 14px;
+      color: #2d3748;
+      background-color: #fff;
+      min-width: 180px;
+      margin-right: 10px;
+    }
+    
+    .sorting-select:focus {
+      border-color: #bf9959;
+      box-shadow: 0 0 0 2px rgba(191, 153, 89, 0.1);
+      outline: none;
+    }
+    
+    .sorting-direction {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      cursor: pointer;
+      font-size: 14px;
+      color: #4a5568;
+      padding: 6px 10px;
+      border-radius: 6px;
+      background-color: #f7fafc;
+      border: 1px solid #e2e8f0;
+    }
+    
+    .sorting-direction:hover {
+      background-color: #edf2f7;
+    }
+    
+    .sorting-direction i {
+      color: #bf9959;
+    }
+    
+    /* Property Grid Layout */
+    .properties-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+      gap: 24px;
+      margin: 30px 0;
+    }
+    
+    /* Property Card Styling */
+    .property-card {
+      border-radius: 12px;
+      overflow: hidden;
+      box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
+      transition: transform 0.3s, box-shadow 0.3s;
+      background: #fff;
+      height: 100%;
+      contain: content; /* CSS containment for better performance */
+      will-change: transform; /* Hint for browser to optimize animations */
+      display: flex;
+      flex-direction: column;
+    }
+    
+    .property-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 12px 24px rgba(0, 0, 0, 0.12);
+    }
+    
+    .property-card-link {
+      text-decoration: none;
+      color: inherit;
+      display: block;
+      height: 100%;
+    }
+    
+    /* Property Image Section - REMOVED */
+    .property-image {
+      display: none; /* Hide the image element */
+    }
+    
+    /* Header Section */
+    .property-header {
+      padding: 16px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: linear-gradient(to right, #f7f9fc, #edf2f7);
+      border-bottom: 1px solid #e2e8f0;
+    }
+    
+    /* Property Status Badge */
+    .property-status {
+      display: inline-block;
+      padding: 6px 12px;
+      border-radius: 20px;
+      font-weight: 600;
+      font-size: 14px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      background-color: #bf9959; /* Default color */
+      color: white;
+    }
+    
+    .property-status.available {
+      background-color: #48bb78;
+    }
+    
+    .property-status.under-offer {
+      background-color: #ed8936;
+    }
+    
+    .property-status.hold {
+      background-color: #ecc94b;
+      color: #1a202c;
+    }
+    
+    .property-status.exclusive {
+      background-color: #9f7aea;
+    }
+    
+    /* Property Price */
+    .property-price {
+      font-size: 18px;
+      font-weight: 700;
+      color: #2d3748;
+    }
+    
+    /* Content Section */
+    .property-content {
+      padding: 24px;
+      flex-grow: 1; /* Allow content to expand and fill the card */
+    }
+    
+    /* Property Title */
+    .property-title {
+      margin: 0 0 12px 0;
+      font-size: 20px;
+      font-weight: 700;
+      color: #1a202c;
+      line-height: 1.2;
+    }
+    
+    /* Property Location */
+    .property-location {
+      margin-bottom: 16px;
+      color: #4a5568;
+      font-size: 15px;
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 8px;
+      line-height: 1.8;
+    }
+    
+    .property-location i {
+      color: #bf9959; /* Changed from #3182ce */
+    }
+    
+    /* Property Neighborhood & Suburb */
+    .property-neighborhood, .property-suburb {
+      margin-bottom: 12px;
+      color: #4a5568;
+      font-size: 14px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    
+    .property-neighborhood i, .property-suburb i {
+      color: #bf9959;
+    }
+    
+    /* Registration Date Display */
+    .registration-date {
+      color: #48bb78;
+      font-weight: 600;
+      font-size: 14px;
+      margin-bottom: 15px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    
+    /* Property Specs Grid */
+    .property-specs-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 12px;
+      margin: 20px 0;
+      text-align: center;
+      padding: 16px 0;
+      border-top: 1px solid #e2e8f0;
+      border-bottom: 1px solid #e2e8f0;
+    }
+    
+    .spec-item {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+    
+    .spec-item i {
+      font-size: 20px;
+      color: #bf9959; /* Changed from #3182ce */
+      margin-bottom: 4px;
+    }
+    
+    .spec-item span {
+      font-size: 18px;
+      font-weight: 600;
+      color: #2d3748;
+    }
+    
+    .spec-item label {
+      font-size: 13px;
+      color: #718096;
+    }
+    
+    /* Property Details */
+    .property-details {
+      margin-top: 20px;
+    }
+    
+    .detail-row {
+      display: flex;
+      justify-content: space-between;
+      padding: 8px 0;
+      border-bottom: 1px solid #edf2f7;
+    }
+    
+    .detail-row:last-child {
+      border-bottom: none;
+    }
+    
+    .detail-label {
+      font-weight: 500;
+      color: #718096;
+    }
+    
+    .detail-value {
+      font-weight: 600;
+      color: #2d3748;
+    }
+    
+    /* CTA Button */
+    .property-cta {
+      margin-top: 20px;
+      background-color: #bf9959; /* Changed from #3182ce */
+      color: white;
+      text-align: center;
+      padding: 12px;
+      border-radius: 6px;
+      font-weight: 600;
+      transition: background-color 0.2s;
+    }
+    
+    .property-cta:hover {
+      background-color: #a88349; /* Changed from #2b6cb0 */
+    }
+    
+    /* New Property Badge */
+    .property-card.new-listing {
+      position: relative;
+    }
+    
+    .property-card.new-listing:before {
+      content: "NEW";
+      position: absolute;
+      top: 15px;
+      right: 15px;
+      background: #48bb78;
+      color: white;
+      padding: 5px 10px;
+      border-radius: 20px;
+      font-weight: bold;
+      font-size: 12px;
+      z-index: 1;
+    }
+    
+    /* Title type badge */
+    .title-type-badge {
+      position: absolute;
+      top: 50px;
+      right: 15px;
+      background: #bf9959;
+      color: white;
+      padding: 4px 8px;
+      border-radius: 4px;
+      font-size: 12px;
+      font-weight: 600;
+      z-index: 1;
+    }
+    
+    /* Loading Spinner */
+    .loading-spinner {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 60px 0;
+    }
+    
+    .spinner {
+      width: 50px;
+      height: 50px;
+      border: 4px solid rgba(0, 0, 0, 0.1);
+      border-radius: 50%;
+      border-top-color: #bf9959; /* Changed from #3182ce */
+      animation: spin 1s ease-in-out infinite;
+      margin-bottom: 20px;
+    }
+    
+    @keyframes spin {
+      to {
+        transform: rotate(360deg);
+      }
+    }
+    
+    /* Skeleton loading animation styles */
+    .skeleton-box {
+      background-color: #e2e5e7;
+      background-image: 
+        linear-gradient(
+          90deg, 
+          rgba(255, 255, 255, 0), 
+          rgba(255, 255, 255, 0.5),
+          rgba(255, 255, 255, 0)
+        );
+      background-size: 200px 100%;
+      background-repeat: no-repeat;
+      background-position: left -40px top 0;
+      animation: shine 1s ease infinite;
+      border-radius: 4px;
+    }
+    
+    @keyframes shine {
+      to {
+        background-position: right -40px top 0;
+      }
+    }
+    
+    /* Error Container */
+    .error-container {
+      text-align: center;
+      padding: 40px 20px;
+      background-color: #fff5f5;
+      border-radius: 10px;
+      border: 1px solid #fed7d7;
+    }
+    
+    .error-container h3 {
+      color: #e53e3e;
+      margin-bottom: 10px;
+    }
+    
+    .error-container button {
+      margin-top: 20px;
+      padding: 10px 20px;
+      background-color: #bf9959; /* Changed from #3182ce */
+      color: white;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      font-weight: 600;
+      transition: background-color 0.2s;
+      margin-right: 8px;
+    }
+    
+    .error-container button:hover {
+      background-color: #a88349; /* Changed from #2b6cb0 */
+    }
+    
+    /* No Results Container */
+    .no-results {
+      text-align: center;
+      padding: 40px 20px;
+      background-color: #f7fafc;
+      border-radius: 10px;
+      border: 1px solid #e2e8f0;
+    }
+    
+    /* Sample data notice */
+    .sample-data-notice {
+      background-color: #f7f1e6; /* Changed from #ebf8ff */
+      border: 1px solid #e8d6b7; /* Changed from #bee3f8 */
+      color: #8c6d3f; /* Changed from #2b6cb0 */
+      padding: 12px 16px;
+      border-radius: 6px;
+      margin-bottom: 20px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    
+    .sample-data-notice i {
+      font-size: 18px;
+    }
+    
+    /* Pagination */
+    .pagination {
+      display: flex;
+      justify-content: center;
+      margin: 30px 0;
+      gap: 8px;
+    }
+    
+    .pagination-btn {
+      padding: 8px 16px;
+      border: 1px solid #e2e8f0;
+      background-color: white;
+      color: #4a5568; /* Added text color for visibility */
+      border-radius: 6px;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    
+    .pagination-btn:hover {
+      background-color: #edf2f7;
+    }
+    
+    .pagination-btn.active {
+      background-color: #bf9959; /* Changed from #3182ce */
+      color: white;
+      border-color: #bf9959; /* Changed from #3182ce */
+    }
+    
+    .pagination-btn:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+    
+    .pagination-ellipsis {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 0 8px;
+    }
+    
+    /* Results Count */
+    .results-count {
+      margin-top: 20px;
+      color: #4a5568;
+      font-size: 14px;
+    }
+    
+    /* Debug Info - only shown when debug=true parameter is used */
+    #debug-info {
+      margin-top: 30px;
+      padding: 15px;
+      background-color: #1a202c;
+      color: #edf2f7;
+      border-radius: 6px;
+      font-family: monospace;
+      font-size: 14px;
+      max-height: 300px;
+      overflow-y: auto;
+      display: none;
+    }
+    
+    /* Responsive Design */
+    @media (max-width: 768px) {
+      .properties-grid {
+        grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      }
+      
+      .filter-group, .search-bar {
+        min-width: 100%;
+      }
+      
+      .property-filters-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 10px;
+      }
+      
+      .sorting-container {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 10px;
+      }
+      
+      .sorting-label {
+        margin-bottom: 5px;
+      }
+      
+      .sorting-select {
+        width: 100%;
+        margin-bottom: 5px;
+      }
+    }
+    
+    @media (max-width: 480px) {
+      .properties-grid {
+        grid-template-columns: 1fr;
+      }
+      
+      .container {
+        padding: 15px 10px;
+      }
+      
+      .property-filters-container {
+        padding: 15px;
+      }
+      
+      .filter-buttons {
+        flex-direction: column;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <!-- Filters Section -->
+    <div class="property-filters-container">
+      <div class="property-filters-header">
+        <h2 class="property-filters-title">Filter Properties</h2>
+        <button class="property-filters-toggle" id="toggle-filters">
+          <span class="toggle-text">Hide Filters</span>
+          <i class="fas fa-chevron-up"></i>
+        </button>
+      </div>
+      
+      <!-- Search Bar -->
+      <div class="property-filters">
+        <div class="search-bar">
+          <label for="property-search">Search Properties</label>
+          <div class="search-input-container">
+            <input type="text" id="property-search" placeholder="Search by location, project, lot number...">
+            <button class="search-button" id="search-button">
+              <i class="fas fa-search"></i>
+            </button>
+          </div>
+        </div>
+        
+        <!-- Primary Filters - Always Visible -->
+        <div class="filter-group">
+          <label for="project-filter">Project</label>
+          <select id="project-filter" class="filter-select">
+            <option value="">All Projects</option>
+            <!-- Will be populated dynamically -->
+          </select>
+        </div>
+        
+        <div class="filter-group">
+          <label for="suburb-filter">Suburb</label>
+          <select id="suburb-filter" class="filter-select">
+            <option value="">All Suburbs</option>
+            <!-- Will be populated dynamically -->
+          </select>
+        </div>
+      </div>
+      
+      <!-- Location & Type Filters -->
+      <div class="property-filters" style="display: flex; margin-top: 16px;">
+        <div class="filter-group">
+          <label for="neighborhood-filter">Neighborhood</label>
+          <select id="neighborhood-filter" class="filter-select">
+            <option value="">All Neighborhoods</option>
+            <!-- Will be populated dynamically -->
+          </select>
+        </div>
+        
+        <div class="filter-group">
+          <label for="listing-type-filter">Listing Type</label>
+          <select id="listing-type-filter" class="filter-select">
+            <option value="">All Listing Types</option>
+            <!-- Will be populated dynamically -->
+          </select>
+        </div>
+        
+        <div class="filter-group">
+          <label for="status-filter">Status</label>
+          <select id="status-filter" class="filter-select">
+            <option value="">All Statuses</option>
+            <!-- Will be populated dynamically -->
+          </select>
+        </div>
+      </div>
+      
+      <!-- Status and Registration Filters -->
+      <div class="property-filters" style="display: flex; margin-top: 16px;">
+        <div class="filter-group">
+          <label for="registration-date-filter">Registration Date</label>
+          <select id="registration-date-filter" class="filter-select">
+            <option value="">Any Date</option>
+            <option value="next-3-months">Next 3 Months</option>
+            <option value="next-6-months">Next 6 Months</option>
+            <option value="this-year">This Year</option>
+            <option value="next-year">Next Year</option>
+            <option value="registered">Already Registered</option>
+          </select>
+        </div>
+        
+        <div class="filter-group">
+          <label for="title-type-filter">Title Type</label>
+          <select id="title-type-filter" class="filter-select">
+            <option value="">All Title Types</option>
+            <option value="Torrens">Torrens</option>
+            <option value="Community">Community</option>
+          </select>
+        </div>
+        
+        <div class="filter-group">
+          <label for="storeys-filter">Storeys</label>
+          <select id="storeys-filter" class="filter-select">
+            <option value="">Any</option>
+            <option value="1">Single Storey</option>
+            <option value="2">Double Storey</option>
+            <option value="3+">3+ Storeys</option>
+          </select>
+        </div>
+      </div>
+      
+      <!-- Advanced Filters - Initially Visible -->
+      <div class="property-filters" id="advanced-filters" style="display: flex; margin-top: 16px;">
+        <div class="filter-group">
+          <label for="land-shape-filter">Land Shape</label>
+          <select id="land-shape-filter" class="filter-select">
+            <option value="">All Land Shapes</option>
+            <!-- Will be populated dynamically -->
+          </select>
+        </div>
+        
+        <div class="filter-group">
+          <label for="aspect-filter">Aspect</label>
+          <select id="aspect-filter" class="filter-select">
+            <option value="">All Aspects</option>
+            <option value="North">North</option>
+            <option value="South">South</option>
+            <option value="East">East</option>
+            <option value="West">West</option>
+            <option value="North East">North East</option>
+            <option value="North West">North West</option>
+            <option value="South East">South East</option>
+            <option value="South West">South West</option>
+          </select>
+        </div>
+        
+        <div class="filter-group">
+          <label for="car-spaces-filter">Car Spaces</label>
+          <select id="car-spaces-filter" class="filter-select">
+            <option value="">Any</option>
+            <option value="1">1+</option>
+            <option value="2">2+</option>
+            <option value="3">3+</option>
+            <option value="4">4+</option>
+          </select>
+        </div>
+      </div>
+      
+      <!-- Additional Advanced Filters Row -->
+      <div class="property-filters" id="advanced-filters-2" style="display: flex; margin-top: 16px;">
+        <div class="filter-group">
+          <label>Build Size</label>
+          <select id="build-size-filter" class="filter-select">
+            <option value="">Any Size</option>
+            <option value="0-150">Under 150m²</option>
+            <option value="150-200">150m² - 200m²</option>
+            <option value="200-250">200m² - 250m²</option>
+            <option value="250-300">250m² - 300m²</option>
+            <option value="300+">Over 300m²</option>
+          </select>
+        </div>
+        
+        <div class="filter-group">
+          <label for="project-filter">Project</label>
+          <select id="project-secondary-filter" class="filter-select">
+            <option value="">All Projects</option>
+            <!-- Will be populated dynamically -->
+          </select>
+        </div>
+        
+        <div class="filter-group">
+          <label for="suburb-filter">Suburb</label>
+          <select id="suburb-secondary-filter" class="filter-select">
+            <option value="">All Suburbs</option>
+            <!-- Will be populated dynamically -->
+          </select>
+        </div>
+      </div>
+      
+      <!-- Additional Property Dimension Filters -->
+      <div class="property-filters" id="advanced-filters-3" style="display: flex; margin-top: 16px;">
+        <div class="filter-group">
+          <label>Frontage (m)</label>
+          <select id="frontage-filter" class="filter-select">
+            <option value="">Any Frontage</option>
+            <option value="0-10">Under 10m</option>
+            <option value="10-15">10m - 15m</option>
+            <option value="15-20">15m - 20m</option>
+            <option value="20+">Over 20m</option>
+          </select>
+        </div>
+        
+        <div class="filter-group">
+          <label>Depth (m)</label>
+          <select id="depth-filter" class="filter-select">
+            <option value="">Any Depth</option>
+            <option value="0-20">Under 20m</option>
+            <option value="20-30">20m - 30m</option>
+            <option value="30-40">30m - 40m</option>
+            <option value="40+">Over 40m</option>
+          </select>
+        </div>
+        
+        <div class="filter-group">
+          <label>Land Size</label>
+          <select id="land-size-filter" class="filter-select">
+            <option value="">Any Size</option>
+            <option value="0-300">Under 300m²</option>
+            <option value="300-450">300m² - 450m²</option>
+            <option value="450-600">450m² - 600m²</option>
+            <option value="600-800">600m² - 800m²</option>
+            <option value="800+">Over 800m²</option>
+          </select>
+        </div>
+      </div>
+      
+      <!-- Home Design Filters -->
+      <div class="property-filters" id="advanced-filters-4" style="display: flex; margin-top: 16px;">
+        <div class="filter-group">
+          <label for="bedrooms-filter">Bedrooms</label>
+          <select id="bedrooms-filter" class="filter-select">
+            <option value="">Any</option>
+            <option value="1">1+</option>
+            <option value="2">2+</option>
+            <option value="3">3+</option>
+            <option value="4">4+</option>
+            <option value="5">5+</option>
+          </select>
+        </div>
+        
+        <div class="filter-group">
+          <label for="bathrooms-filter">Bathrooms</label>
+          <select id="bathrooms-filter" class="filter-select">
+            <option value="">Any</option>
+            <option value="1">1+</option>
+            <option value="2">2+</option>
+            <option value="3">3+</option>
+            <option value="4">4+</option>
+          </select>
+        </div>
+        
+        <div class="filter-group">
+          <label for="price-filter">Price Range</label>
+          <select id="price-filter" class="filter-select">
+            <option value="">Any Price</option>
+            <option value="0-500000">Under $500,000</option>
+            <option value="500000-750000">$500,000 - $750,000</option>
+            <option value="750000-1000000">$750,000 - $1,000,000</option>
+            <option value="1000000-1500000">$1,000,000 - $1,500,000</option>
+            <option value="1500000+">$1,500,000+</option>
+          </select>
+        </div>
+      </div>
+      
+      <!-- Active Filters -->
+      <div class="active-filters" id="active-filters">
+        <!-- Will be populated dynamically -->
+      </div>
+      
+      <!-- Filter Buttons -->
+      <div class="filter-buttons" id="filter-buttons" style="display: none;">
+        <button class="filter-clear-button" id="clear-filters">Clear All Filters</button>
+        <button class="filter-apply-button" id="apply-filters">Apply Filters</button>
+      </div>
+    </div>
+    
+    <!-- Sorting Controls -->
+    <div class="sorting-container">
+      <div class="sorting-label">Sort By:</div>
+      <select id="sort-by" class="sorting-select">
+        <option value="default">Default</option>
+        <option value="price-asc">Price (Low to High)</option>
+        <option value="price-desc">Price (High to Low)</option>
+        <option value="land-size-asc">Land Size (Small to Large)</option>
+        <option value="land-size-desc">Land Size (Large to Small)</option>
+        <option value="frontage-desc">Frontage (Largest First)</option>
+        <option value="registration-date-asc">Registration Date (Soonest First)</option>
+        <option value="bedrooms-desc">Bedrooms (Most First)</option>
+        <option value="project">Project Name</option>
+        <option value="newest">Newest First</option>
+      </select>
+      
+      <div class="sorting-direction" id="toggle-direction">
+        <i class="fas fa-sort-amount-down"></i>
+        <span>Descending</span>
+      </div>
+    </div>
+    
+    <!-- Results Count -->
+    <div class="results-count" id="results-count">
+      <!-- Will be populated dynamically -->
+    </div>
+    
+    <!-- Properties Container - Where properties will be rendered -->
+    <div id="properties-container">
+      <!-- Skeleton loaders will be shown initially -->
+      <!-- This will be filled by JavaScript -->
+    </div>
+    
+    <!-- Pagination Section -->
+    <div id="pagination" class="pagination">
+      <!-- Will be populated dynamically -->
+    </div>
+    
+    <!-- Debug information (hidden by default) -->
+    <div id="debug-info"></div>
+  </div>
+  
+  <script>
+    // On page load
+    document.addEventListener('DOMContentLoaded', function() {
+      // Debug log function
+      function log(message) {
+        console.log(`[Property Listings] ${message}`);
+        const debugInfo = document.getElementById('debug-info');
+        if (debugInfo && debugInfo.style.display !== 'none') {
+          const div = document.createElement('div');
+          div.textContent = message;
+          debugInfo.appendChild(div);
+          debugInfo.scrollTop = debugInfo.scrollHeight;
+        }
+      }
+      
+      // Show debug panel if URL has debug=true
+      if (new URLSearchParams(window.location.search).get('debug') === 'true') {
+        const debugInfo = document.getElementById('debug-info');
+        if (debugInfo) debugInfo.style.display = 'block';
+      }
+      
+      // State variables
+      let allProperties = [];
+      let filteredProperties = [];
+      let currentPage = 1;
+      const propertiesPerPage = 9;
+      
+      // Sorting state
+      let currentSort = 'default';
+      let isDescending = true;
+      
+      // Filter state
+      let filters = {
+        search: '',
+        project: '',
+        suburb: '',
+        neighborhood: '',
+        listingType: '',
+        status: '',
+        landShape: '',
+        aspect: '',
+        titleType: '',
+        registrationDate: '',
+        storeys: '',
+        priceMin: null,
+        priceMax: null,
+        landSizeMin: null,
+        landSizeMax: null,
+        buildSizeMin: null,
+        buildSizeMax: null,
+        frontageMin: null,
+        frontageMax: null,
+        depthMin: null,
+        depthMax: null,
+        minBedrooms: null,
+        minBathrooms: null,
+        minCarSpaces: null
+      };
+      
+      // Initialize UI interactions
+      function initializeUIInteractions() {
+        // Toggle advanced filters
+        const toggleFiltersBtn = document.getElementById('toggle-filters');
+        const advancedFilters = document.getElementById('advanced-filters');
+        const advancedFilters2 = document.getElementById('advanced-filters-2');
+        const advancedFilters3 = document.getElementById('advanced-filters-3');
+        const advancedFilters4 = document.getElementById('advanced-filters-4');
+        const toggleText = toggleFiltersBtn.querySelector('.toggle-text');
+        const toggleIcon = toggleFiltersBtn.querySelector('i');
+        
+        toggleFiltersBtn.addEventListener('click', function() {
+          const isVisible = advancedFilters.style.display !== 'none';
+          const newDisplay = isVisible ? 'none' : 'flex';
+          
+          // Toggle all advanced filter rows together
+          advancedFilters.style.display = newDisplay;
+          advancedFilters2.style.display = newDisplay;
+          advancedFilters3.style.display = newDisplay;
+          advancedFilters4.style.display = newDisplay;
+          
+          toggleText.textContent = isVisible ? 'Show All Filters' : 'Hide Filters';
+          toggleIcon.className = isVisible ? 'fas fa-chevron-down' : 'fas fa-chevron-up';
+        });
+        
+        // Apply filters button - apply immediately (no debounce)
+        document.getElementById('apply-filters').addEventListener('click', function() {
+          filterProperties(); // Already applies the current filter values
+        });
+        
+        // Clear filters button - explicitly set all values
+        document.getElementById('clear-filters').addEventListener('click', function() {
+          // Reset all filter selects
+          document.querySelectorAll('.filter-select').forEach(select => {
+            select.value = '';
+          });
+          
+          // Clear search
+          document.getElementById('property-search').value = '';
+          
+          // Reset filter object
+          for (let key in filters) {
+            if (key === 'search' || key.includes('Min') || key.includes('Max')) {
+              filters[key] = null;
+            } else {
+              filters[key] = '';
+            }
+          }
+          
+          // Clear active filters display
+          document.getElementById('active-filters').innerHTML = '';
+          
+          // Apply cleared filters
+          filterProperties();
+        });
+        
+        // Search button click - apply immediately
+        document.getElementById('search-button').addEventListener('click', function() {
+          const searchInput = document.getElementById('property-search');
+          filters.search = searchInput.value.toLowerCase();
+          updateActiveFilters();
+          filterProperties();
+        });
+        
+        // Search input enter key
+        document.getElementById('property-search').addEventListener('keypress', function(e) {
+          if (e.key === 'Enter') {
+            filters.search = this.value.toLowerCase();
+            updateActiveFilters();
+            filterProperties();
+          }
+        });
+        
+        // Sort selection change
+        document.getElementById('sort-by').addEventListener('change', function(e) {
+          currentSort = e.target.value;
+          sortProperties();
+          renderProperties();
+        });
+        
+        // Sort direction toggle
+        document.getElementById('toggle-direction').addEventListener('click', function() {
+          isDescending = !isDescending;
+          
+          // Update UI
+          const icon = this.querySelector('i');
+          const text = this.querySelector('span');
+          
+          if (isDescending) {
+            icon.className = 'fas fa-sort-amount-down';
+            text.textContent = 'Descending';
+          } else {
+            icon.className = 'fas fa-sort-amount-up';
+            text.textContent = 'Ascending';
+          }
+          
+          sortProperties();
+          renderProperties();
+        });
+      }
+      
+      // Initialize filters with immediate application
+      function initializeFilters() {
+        // Simple select filters
+        const simpleFilters = [
+          {id: 'project-filter', key: 'project'},
+          {id: 'project-secondary-filter', key: 'project'},
+          {id: 'suburb-filter', key: 'suburb'},
+          {id: 'suburb-secondary-filter', key: 'suburb'},
+          {id: 'neighborhood-filter', key: 'neighborhood'},
+          {id: 'listing-type-filter', key: 'listingType'},
+          {id: 'status-filter', key: 'status'},
+          {id: 'land-shape-filter', key: 'landShape'},
+          {id: 'aspect-filter', key: 'aspect'},
+          {id: 'title-type-filter', key: 'titleType'},
+          {id: 'registration-date-filter', key: 'registrationDate'},
+          {id: 'storeys-filter', key: 'storeys'},
+          {id: 'car-spaces-filter', key: 'minCarSpaces'}
+        ];
+        
+        simpleFilters.forEach(filter => {
+          const element = document.getElementById(filter.id);
+          if (element) {
+            element.addEventListener('change', function(e) {
+              if (filter.key === 'minCarSpaces') {
+                filters[filter.key] = e.target.value ? parseInt(e.target.value) : null;
+              } else {
+                filters[filter.key] = e.target.value;
+              }
+              updateActiveFilters();
+              filterProperties(); // Apply immediately
+            });
+          }
+        });
+        
+        // Range filters
+        const rangeFilters = [
+          {id: 'price-filter', minKey: 'priceMin', maxKey: 'priceMax', label: 'Price'},
+          {id: 'land-size-filter', minKey: 'landSizeMin', maxKey: 'landSizeMax', label: 'Land Size'},
+          {id: 'build-size-filter', minKey: 'buildSizeMin', maxKey: 'buildSizeMax', label: 'Build Size'},
+          {id: 'frontage-filter', minKey: 'frontageMin', maxKey: 'frontageMax', label: 'Frontage'},
+          {id: 'depth-filter', minKey: 'depthMin', maxKey: 'depthMax', label: 'Depth'}
+        ];
+        
+        rangeFilters.forEach(filter => {
+          const element = document.getElementById(filter.id);
+          if (element) {
+            element.addEventListener('change', function(e) {
+              const range = e.target.value.split('-');
+              filters[filter.minKey] = range[0] ? parseInt(range[0]) : null;
+              filters[filter.maxKey] = range[1] ? parseInt(range[1]) : null;
+              if (range[0] && range[0].endsWith('+')) {
+                filters[filter.minKey] = parseInt(range[0]);
+                filters[filter.maxKey] = null;
+              }
+              updateActiveFilters();
+              filterProperties(); // Apply immediately
+            });
+          }
+        });
+        
+        // Minimum value filters
+        const minFilters = [
+          {id: 'bedrooms-filter', key: 'minBedrooms', label: 'Bedrooms'},
+          {id: 'bathrooms-filter', key: 'minBathrooms', label: 'Bathrooms'}
+        ];
+        
+        minFilters.forEach(filter => {
+          const element = document.getElementById(filter.id);
+          if (element) {
+            element.addEventListener('change', function(e) {
+              filters[filter.key] = e.target.value ? parseInt(e.target.value) : null;
+              updateActiveFilters();
+              filterProperties(); // Apply immediately
+            });
+          }
+        });
+        
+        // Search input with debounce for typing
+        const searchInput = document.getElementById('property-search');
+        if (searchInput) {
+          let debounceTimeout;
+          searchInput.addEventListener('input', function(e) {
+            clearTimeout(debounceTimeout);
+            debounceTimeout = setTimeout(() => {
+              filters.search = e.target.value.toLowerCase();
+              updateActiveFilters();
+              filterProperties(); // Apply when debounce completes
+            }, 300); // 300ms debounce
+          });
+        }
+      }
+      
+      // Sort properties based on current sort option and direction
+      function sortProperties() {
+        if (!filteredProperties.length) return;
+        
+        // Define sort types and their functions
+        const sortFunctions = {
+          'default': (a, b) => 0, // No specific sort, use default API order
+          'price-asc': (a, b) => {
+            const priceA = getPriceValue(a.properties);
+            const priceB = getPriceValue(b.properties);
+            return isDescending ? priceB - priceA : priceA - priceB;
+          },
+          'price-desc': (a, b) => {
+            const priceA = getPriceValue(a.properties);
+            const priceB = getPriceValue(b.properties);
+            return isDescending ? priceA - priceB : priceB - priceA;
+          },
+          'land-size-asc': (a, b) => {
+            const sizeA = parseFloat(a.properties?.hs_lot_size || 0);
+            const sizeB = parseFloat(b.properties?.hs_lot_size || 0);
+            return isDescending ? sizeB - sizeA : sizeA - sizeB;
+          },
+          'land-size-desc': (a, b) => {
+            const sizeA = parseFloat(a.properties?.hs_lot_size || 0);
+            const sizeB = parseFloat(b.properties?.hs_lot_size || 0);
+            return isDescending ? sizeA - sizeB : sizeB - sizeA;
+          },
+          'frontage-desc': (a, b) => {
+            const frontageA = parseFloat(a.properties?.cg_frontage || 0);
+            const frontageB = parseFloat(b.properties?.cg_frontage || 0);
+            return isDescending ? frontageA - frontageB : frontageB - frontageA;
+          },
+          'registration-date-asc': (a, b) => {
+            const dateA = a.properties?.cg_registration_date ? new Date(a.properties.cg_registration_date) : new Date(9999, 11, 31);
+            const dateB = b.properties?.cg_registration_date ? new Date(b.properties.cg_registration_date) : new Date(9999, 11, 31);
+            return isDescending ? dateB - dateA : dateA - dateB;
+          },
+          'bedrooms-desc': (a, b) => {
+            const bedroomsA = parseInt(a.properties?.hs_bedrooms || 0);
+            const bedroomsB = parseInt(b.properties?.hs_bedrooms || 0);
+            return isDescending ? bedroomsA - bedroomsB : bedroomsB - bedroomsA;
+          },
+          'project': (a, b) => {
+            const projectA = a.properties?.cg_project || '';
+            const projectB = b.properties?.cg_project || '';
+            const compare = projectA.localeCompare(projectB);
+            return isDescending ? -compare : compare;
+          },
+          'newest': (a, b) => {
+            // For demo, using ID as proxy for "newest" since we don't have created date
+            const idA = parseInt(a.id || 0);
+            const idB = parseInt(b.id || 0);
+            return isDescending ? idB - idA : idA - idB;
+          }
+        };
+        
+        // Apply the selected sort function
+        const sortFunction = sortFunctions[currentSort] || sortFunctions['default'];
+        filteredProperties.sort(sortFunction);
+        
+        // Reset to first page when sort changes
+        currentPage = 1;
+        
+        // Helper function to extract price from various fields
+        function getPriceValue(props) {
+          const price = parseFloat(props?.hs_price || 
+                       props?.cg_listed_package_price || 
+                       props?.cg_build_list_price || 
+                       props?.cg_land_release_price || 0);
+          return price;
+        }
+      }
+      
+      // Update active filters display
+      function updateActiveFilters() {
+        const container = document.getElementById('active-filters');
+        if (!container) return;
+        
+        // Clear existing filters
+        container.innerHTML = '';
+        
+        // Helper to get select option text
+        function getSelectOptionText(selectId, value) {
+          const select = document.getElementById(selectId);
+          if (!select) return value;
+          
+          const option = Array.from(select.options).find(opt => opt.value === value);
+          return option ? option.textContent : (selectId === 'listing-type-filter' ? formatListingType(value) : formatFieldName(value));
+        }
+        
+        // Check if we have any active filters
+        let hasActiveFilters = false;
+        
+        // Add active filter pills
+        if (filters.search) {
+          addFilterPill('Search', `"${filters.search}"`, () => {
+            filters.search = '';
+            document.getElementById('property-search').value = '';
+            filterProperties();
+          });
+          hasActiveFilters = true;
+        }
+        
+        if (filters.project) {
+          addFilterPill('Project', getSelectOptionText('project-filter', filters.project), () => {
+            filters.project = '';
+            const element = document.getElementById('project-filter');
+            if (element) element.value = '';
+          });
+          hasActiveFilters = true;
+        }
+        
+        if (filters.suburb) {
+          addFilterPill('Suburb', getSelectOptionText('suburb-filter', filters.suburb), () => {
+            filters.suburb = '';
+            const element = document.getElementById('suburb-filter');
+            if (element) element.value = '';
+          });
+          hasActiveFilters = true;
+        }
+        
+        if (filters.neighborhood) {
+          addFilterPill('Neighborhood', getSelectOptionText('neighborhood-filter', filters.neighborhood), () => {
+            filters.neighborhood = '';
+            const element = document.getElementById('neighborhood-filter');
+            if (element) element.value = '';
+          });
+          hasActiveFilters = true;
+        }
+        
+        if (filters.listingType) {
+          addFilterPill('Listing Type', getSelectOptionText('listing-type-filter', filters.listingType), () => {
+            filters.listingType = '';
+            const element = document.getElementById('listing-type-filter');
+            if (element) element.value = '';
+          });
+          hasActiveFilters = true;
+        }
+        
+        if (filters.status) {
+          addFilterPill('Status', getSelectOptionText('status-filter', filters.status), () => {
+            filters.status = '';
+            const element = document.getElementById('status-filter');
+            if (element) element.value = ''; // Reset dropdown selection
+            filterProperties();
+          });
+          hasActiveFilters = true;
+        }
+        
+        if (filters.registrationDate) {
+          addFilterPill('Registration Date', getSelectOptionText('registration-date-filter', filters.registrationDate), () => {
+            filters.registrationDate = '';
+            const element = document.getElementById('registration-date-filter');
+            if (element) element.value = ''; // Reset dropdown selection
+            filterProperties();
+          });
+          hasActiveFilters = true;
+        }
+        
+        if (filters.landShape) {
+          addFilterPill('Land Shape', getSelectOptionText('land-shape-filter', filters.landShape), () => {
+            filters.landShape = '';
+            const element = document.getElementById('land-shape-filter');
+            if (element) element.value = ''; // Reset dropdown selection
+            filterProperties();
+          });
+          hasActiveFilters = true;
+        }
+        
+        if (filters.aspect) {
+          addFilterPill('Aspect', getSelectOptionText('aspect-filter', filters.aspect), () => {
+            filters.aspect = '';
+            const element = document.getElementById('aspect-filter');
+            if (element) element.value = ''; // Reset dropdown selection
+            filterProperties();
+          });
+          hasActiveFilters = true;
+        }
+        
+        if (filters.titleType) {
+          addFilterPill('Title Type', getSelectOptionText('title-type-filter', filters.titleType), () => {
+            filters.titleType = '';
+            const element = document.getElementById('title-type-filter');
+            if (element) element.value = ''; // Reset dropdown selection
+            filterProperties();
+          });
+          hasActiveFilters = true;
+        }
+        
+        if (filters.storeys) {
+          addFilterPill('Storeys', getSelectOptionText('storeys-filter', filters.storeys), () => {
+            filters.storeys = '';
+            const element = document.getElementById('storeys-filter');
+            if (element) element.value = ''; // Reset dropdown selection
+            filterProperties();
+          });
+          hasActiveFilters = true;
+        }
+        
+        // Price range
+        if (filters.priceMin !== null || filters.priceMax !== null) {
+          let priceText = '';
+          if (filters.priceMin !== null && filters.priceMax !== null) {
+            priceText = `${formatNumber(filters.priceMin)} - ${formatNumber(filters.priceMax)}`;
+          } else if (filters.priceMin !== null) {
+            priceText = `${formatNumber(filters.priceMin)}+`;
+          } else if (filters.priceMax !== null) {
+            priceText = `Up to ${formatNumber(filters.priceMax)}`;
+          }
+          
+          addFilterPill('Price', priceText, () => {
+            filters.priceMin = null;
+            filters.priceMax = null;
+            const element = document.getElementById('price-filter');
+            if (element) element.value = ''; // Reset dropdown selection
+            filterProperties();
+          });
+          hasActiveFilters = true;
+        }
+        
+        // Land size range
+        if (filters.landSizeMin !== null || filters.landSizeMax !== null) {
+          let sizeText = '';
+          if (filters.landSizeMin !== null && filters.landSizeMax !== null) {
+            sizeText = `${filters.landSizeMin}m² - ${filters.landSizeMax}m²`;
+          } else if (filters.landSizeMin !== null) {
+            sizeText = `${filters.landSizeMin}m²+`;
+          } else if (filters.landSizeMax !== null) {
+            sizeText = `Up to ${filters.landSizeMax}m²`;
+          }
+          
+          addFilterPill('Land Size', sizeText, () => {
+            filters.landSizeMin = null;
+            filters.landSizeMax = null;
+            const element = document.getElementById('land-size-filter');
+            if (element) element.value = ''; // Reset dropdown selection
+            filterProperties();
+          });
+          hasActiveFilters = true;
+        }
+        
+        // Build size range
+        if (filters.buildSizeMin !== null || filters.buildSizeMax !== null) {
+          let sizeText = '';
+          if (filters.buildSizeMin !== null && filters.buildSizeMax !== null) {
+            sizeText = `${filters.buildSizeMin}m² - ${filters.buildSizeMax}m²`;
+          } else if (filters.buildSizeMin !== null) {
+            sizeText = `${filters.buildSizeMin}m²+`;
+          } else if (filters.buildSizeMax !== null) {
+            sizeText = `Up to ${filters.buildSizeMax}m²`;
+          }
+          
+          addFilterPill('Build Size', sizeText, () => {
+            filters.buildSizeMin = null;
+            filters.buildSizeMax = null;
+            const element = document.getElementById('build-size-filter');
+            if (element) element.value = ''; // Reset dropdown selection
+            filterProperties();
+          });
+          hasActiveFilters = true;
+        }
+        
+        // Frontage range
+        if (filters.frontageMin !== null || filters.frontageMax !== null) {
+          let rangeText = '';
+          if (filters.frontageMin !== null && filters.frontageMax !== null) {
+            rangeText = `${filters.frontageMin}m - ${filters.frontageMax}m`;
+          } else if (filters.frontageMin !== null) {
+            rangeText = `${filters.frontageMin}m+`;
+          } else if (filters.frontageMax !== null) {
+            rangeText = `Up to ${filters.frontageMax}m`;
+          }
+          
+          addFilterPill('Frontage', rangeText, () => {
+            filters.frontageMin = null;
+            filters.frontageMax = null;
+            const element = document.getElementById('frontage-filter');
+            if (element) element.value = ''; // Reset dropdown selection
+            filterProperties();
+          });
+          hasActiveFilters = true;
+        }
+        
+        // Depth range
+        if (filters.depthMin !== null || filters.depthMax !== null) {
+          let rangeText = '';
+          if (filters.depthMin !== null && filters.depthMax !== null) {
+            rangeText = `${filters.depthMin}m - ${filters.depthMax}m`;
+          } else if (filters.depthMin !== null) {
+            rangeText = `${filters.depthMin}m+`;
+          } else if (filters.depthMax !== null) {
+            rangeText = `Up to ${filters.depthMax}m`;
+          }
+          
+          addFilterPill('Depth', rangeText, () => {
+            filters.depthMin = null;
+            filters.depthMax = null;
+            const element = document.getElementById('depth-filter');
+            if (element) element.value = ''; // Reset dropdown selection
+            filterProperties();
+          });
+          hasActiveFilters = true;
+        }
+        
+        // Minimum filters
+        if (filters.minBedrooms !== null) {
+          addFilterPill('Bedrooms', `${filters.minBedrooms}+`, () => {
+            filters.minBedrooms = null;
+            const element = document.getElementById('bedrooms-filter');
+            if (element) element.value = ''; // Reset dropdown selection
+            filterProperties();
+          });
+          hasActiveFilters = true;
+        }
+        
+        if (filters.minBathrooms !== null) {
+          addFilterPill('Bathrooms', `${filters.minBathrooms}+`, () => {
+            filters.minBathrooms = null;
+            const element = document.getElementById('bathrooms-filter');
+            if (element) element.value = ''; // Reset dropdown selection
+            filterProperties();
+          });
+          hasActiveFilters = true;
+        }
+        
+        if (filters.minCarSpaces !== null) {
+          addFilterPill('Car Spaces', `${filters.minCarSpaces}+`, () => {
+            filters.minCarSpaces = null;
+            const element = document.getElementById('car-spaces-filter');
+            if (element) element.value = ''; // Reset dropdown selection
+            filterProperties();
+          });
+          hasActiveFilters = true;
+        }
+        
+        // Show/hide the filter buttons based on active filters
+        document.getElementById('filter-buttons').style.display = hasActiveFilters ? 'flex' : 'none';
+        
+        // Helper function to add a filter pill
+        function addFilterPill(label, value, removeCallback) {
+          const pill = document.createElement('div');
+          pill.className = 'filter-pill';
+          pill.innerHTML = `
+            <span>${label}: ${value}</span>
+            <i class="fas fa-times filter-pill-remove"></i>
+          `;
+          
+          // Add remove functionality
+          pill.querySelector('.filter-pill-remove').addEventListener('click', function(e) {
+            // Prevent event bubbling
+            e.stopPropagation();
+            
+            // Call the provided callback to reset filter state
+            removeCallback();
+            
+            // Remove this pill directly from the DOM
+            pill.remove();
+            
+            // Refresh filters
+            filterProperties();
+          });
+          
+          container.appendChild(pill);
+        }
+      }
+      
+      // Helper function to format numbers
+      function formatNumber(num) {
+        return num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+      }
+      
+      // Display skeleton loaders for improved perceived performance
+      function displaySkeletonLoaders() {
+        const container = document.getElementById('properties-container');
+        if (!container) return;
+        
+        let html = '<div class="properties-grid">';
+        
+        // Create 6 skeleton loaders - UPDATED to remove image section
+        for (let i = 0; i < 6; i++) {
+          html += `
+            <div class="property-card skeleton">
+              <div class="property-header">
+                <div class="skeleton-box" style="width: 30%; height: 24px;"></div>
+                <div class="skeleton-box" style="width: 40%; height: 24px;"></div>
+              </div>
+              <div class="property-content">
+                <div class="skeleton-box" style="width: 80%; height: 28px; margin-bottom: 12px;"></div>
+                <div class="skeleton-box" style="width: 60%; height: 18px; margin-bottom: 16px;"></div>
+                
+                <div class="property-specs-grid">
+                  <div class="skeleton-box" style="width: 80%; height: 40px;"></div>
+                  <div class="skeleton-box" style="width: 80%; height: 40px;"></div>
+                  <div class="skeleton-box" style="width: 80%; height: 40px;"></div>
+                </div>
+                
+                <div class="property-details">
+                  <div class="skeleton-box" style="width: 100%; height: 16px; margin: 8px 0;"></div>
+                  <div class="skeleton-box" style="width: 100%; height: 16px; margin: 8px 0;"></div>
+                  <div class="skeleton-box" style="width: 100%; height: 16px; margin: 8px 0;"></div>
+                </div>
+                
+                <div class="skeleton-box" style="width: 100%; height: 40px; margin-top: 20px;"></div>
+              </div>
+            </div>
+          `;
+        }
+        
+        html += '</div>';
+        container.innerHTML = html;
+      }
+      
+      // Load properties with progressive enhancement
+      async function loadProperties() {
+        const container = document.getElementById('properties-container');
+        
+        // Show loading state immediately
+        if (container) {
+          displaySkeletonLoaders();
+        }
+        
+        try {
+          log("Starting property fetch...");
+          
+          // Use a timestamp to prevent caching if needed
+          const timestamp = new Date().getTime();
+          const url = `https://eo6b0y2wbmrsq7l.m.pipedream.net?_t=${timestamp}`;
+          
+          log(`Fetching from: ${url}`);
+          
+          // Set a timeout to abort long-running requests
+          const controller = new AbortController();
+          const timeoutId = setTimeout(() => controller.abort(), 15000); // 15 second timeout
+          
+          const response = await fetch(url, {
+            signal: controller.signal
+          });
+          
+          clearTimeout(timeoutId);
+          
+          log(`Received response: ${response.status}`);
+          
+          if (!response.ok) {
+            throw new Error(`Server returned ${response.status}`);
+          }
+          
+          const data = await response.json();
+          
+          log(`Data parsed successfully, success: ${data.success}, results: ${data.results?.length || 0}`);
+          
+          if (!data.success) {
+            throw new Error(data.error || "Unknown API error");
+          }
+          
+          if (!data.results || data.results.length === 0) {
+            container.innerHTML = `
+              <div class="no-results">
+                <h3>No Properties Found</h3>
+                <p>No properties are currently available.</p>
+              </div>
+            `;
+            return;
+          }
+          
+          // Store all properties
+          allProperties = data.results;
+          
+          // UPDATED: Filter for only the specified statuses
+          const includedStatuses = [
+            "cg_exclusive",
+            "cg_available",
+            "cg_under_offer",
+            "cg_hold"
+          ];
+          
+          // Filter out any properties with status not in includedStatuses
+          allProperties = allProperties.filter(property => {
+            const status = property.properties?.cg_status;
+            return status && includedStatuses.includes(status);
+          });
+          
+          log(`After status filtering: ${allProperties.length} properties remain`);
+          
+          // Initialize filter dropdowns with available options
+          populateFilterOptions();
+          
+          // Apply initial filtering (no filters active)
+          filterProperties();
+          
+          // Log cache status if available
+          if (data.cached) {
+            log(`Using cached data (${data.cache_age} seconds old)`);
+          }
+          
+        } catch (error) {
+          log(`ERROR: ${error.message}`);
+          
+          // Check if it was a timeout
+          const errorMessage = error.name === 'AbortError' 
+            ? 'Request timed out. The server is taking too long to respond.' 
+            : error.message;
+          
+          if (container) {
+            container.innerHTML = `
+              <div class="error-container">
+                <h3>Error Loading Properties</h3>
+                <p>${errorMessage}</p>
+                <button onclick="location.reload()">Try Again</button>
+                <button onclick="window.loadSampleData()">View Sample Properties</button>
+              </div>
+            `;
+          }
+        }
+      }
+      
+      function getSampleProperties() {
+        // Return 12 sample properties with minimal data
+        const listingTypes = ['House & Land Package', 'Land Only', 'Townhouse', 'Apartment'];
+        const aspects = ['North', 'South', 'East', 'West', 'North East', 'North West', 'South East', 'South West'];
+        const titleTypes = ['Torrens', 'Community', 'Torrens', 'Torrens'];
+        const neighborhoods = ['Valley View', 'Riverside', 'Highland Hills', 'Ocean Breeze'];
+        const suburbs = ['Springfield', 'Lakeside', 'Meadowlands', 'Hillcrest'];
+        
+        return Array(12).fill().map((_, index) => ({
+          id: `sample-${index + 1}`,
+          properties: {
+            hs_listing_type: listingTypes[index % 4],
+            cg_project: ['Meadowview', 'Riverside Estates', 'Highland Park', 'Summit Ridge'][index % 4],
+            cg_stage: `${Math.floor(index / 4) + 1}`,
+            cg_dp_lot: `${index + 101}`,
+            cg_mp_lot: `${index + 501}`,
+            cg_status: ['cg_available', 'cg_hold', 'cg_under_offer', 'cg_exclusive'][index % 4],
+            cg_listed_package_price: (500000 + (index * 50000)).toString(),
+            hs_price: (450000 + (index * 45000)).toString(),
+            hs_lot_size: (350 + (index * 50)).toString(),
+            cg_total_build_size: (180 + (index * 20)).toString(),
+            hs_bedrooms: (3 + (index % 3)).toString(),
+            hs_bathrooms: (2 + (index % 3)).toString(),
+            cg_car: (index % 3 + 1).toString(),
+            cg_house_type: ['Single Story', 'Double Story', 'Townhouse', 'Duplex'][index % 4],
+            cg_land_type: ['Corner', 'Standard', 'Premium', 'Waterfront'][index % 4],
+            cg_facade: ['Modern', 'Contemporary', 'Traditional', 'Hampton'][index % 4],
+            cg_aspect: aspects[index % 8],
+            cg_title_type: titleTypes[index % 4],
+            cg_frontage: (10 + (index % 15)).toString(),
+            cg_depth: (25 + (index % 20)).toString(),
+            cg_registration_date: new Date(2024, 5 + (index % 12), 15 + (index % 10)).toISOString().split('T')[0],
+            cg_storeys: (1 + (index % 3)).toString(),
+            hs_neighborhood: neighborhoods[index % 4],
+            hs_city: suburbs[index % 4]
+          }
+        }));
+      }
+      
+      // Add global sample data function for error state
+      window.loadSampleData = function() {
+        const sampleData = getSampleProperties();
+        allProperties = sampleData;
+        populateFilterOptions();
+        filterProperties();
+        
+        // Add sample data notice
+        const notice = document.createElement('div');
+        notice.className = 'sample-data-notice';
+        notice.innerHTML = '<i class="fas fa-info-circle"></i> Showing sample property data. Live data is currently unavailable.';
+        document.querySelector('.container').prepend(notice);
+      };
+      
+      // Populate filter select options from available properties
+      function populateFilterOptions() {
+        // Get unique values for each filter
+        const projects = new Set();
+        const statuses = new Set();
+        const landShapes = new Set();
+        const aspects = new Set();
+        const listingTypes = new Set();
+        const titleTypes = new Set();
+        const neighborhoods = new Set();
+        const suburbs = new Set();
+        const storeys = new Set();
+        
+        allProperties.forEach(property => {
+          const props = property.properties || {};
+          
+          // Add project if available
+          if (props.cg_project) {
+            projects.add(props.cg_project);
+          }
+          
+          // Add status if available
+          if (props.cg_status) {
+            statuses.add(props.cg_status);
+          }
+          
+          // Add land shape (formerly type) if available
+          if (props.cg_land_type) {
+            landShapes.add(props.cg_land_type);
+          }
+          
+          // Add aspect if available
+          if (props.cg_aspect) {
+            aspects.add(props.cg_aspect);
+          }
+          
+          // Add listing type if available
+          if (props.hs_listing_type) {
+            listingTypes.add(props.hs_listing_type);
+          }
+          
+          // Add title type if available
+          if (props.cg_title_type) {
+            titleTypes.add(props.cg_title_type);
+          }
+          
+          // Add neighborhood if available
+          if (props.hs_neighborhood) {
+            neighborhoods.add(props.hs_neighborhood);
+          }
+          
+          // Add suburb if available
+          if (props.hs_city) {
+            suburbs.add(props.hs_city);
+          }
+          
+          // Add storeys if available
+          if (props.cg_storeys) {
+            storeys.add(props.cg_storeys);
+          }
+        });
+        
+        // Populate project filters
+        populateSelect('project-filter', projects);
+        populateSelect('project-secondary-filter', projects);
+        
+        // Populate suburb filters
+        populateSelect('suburb-filter', suburbs);
+        populateSelect('suburb-secondary-filter', suburbs);
+        
+        // Populate neighborhood filter
+        populateSelect('neighborhood-filter', neighborhoods);
+        
+        // Populate listing type filter
+        populateSelect('listing-type-filter', listingTypes);
+        
+        // Populate status filter
+        populateSelect('status-filter', statuses);
+        
+        // Populate land shape filter
+        populateSelect('land-shape-filter', landShapes);
+        
+        // Populate aspect filter
+        populateSelect('aspect-filter', aspects);
+        
+        // Populate title type filter (keeping the defaults)
+        populateSelect('title-type-filter', titleTypes, true);
+        
+        // Helper function to populate select options
+        function populateSelect(selectId, optionsSet, keepDefaults = false) {
+          const select = document.getElementById(selectId);
+          if (!select) return;
+          
+          // Keep the first option (e.g., "All Projects")
+          const firstOption = select.options[0];
+          
+          if (!keepDefaults) {
+            select.innerHTML = '';
+            select.appendChild(firstOption);
+          } else {
+            // Keep existing options (for predefined selections like title types)
+            const existingOptions = Array.from(select.options);
+            const existingValues = existingOptions.map(opt => opt.value);
+            
+            // Filter out values that already exist in the dropdown
+            optionsSet = Array.from(optionsSet).filter(value => !existingValues.includes(value));
+          }
+          
+          // Add options to select
+          Array.from(optionsSet).sort().forEach(value => {
+            const option = document.createElement('option');
+            option.value = value;
+            
+            // Use special formatting for listing types
+            if (selectId === 'listing-type-filter') {
+              option.textContent = formatListingType(value);
+            } else {
+              option.textContent = formatFieldName(value);
+            }
+            
+            select.appendChild(option);
+          });
+        }
+      }
+      
+      // Filter properties based on current filter settings
+      function filterProperties() {
+        // UPDATED: Define included statuses instead of excluded
+        const includedStatuses = [
+          "cg_exclusive",
+          "cg_available",
+          "cg_under_offer",
+          "cg_hold"
+        ];
+        
+        // Debug: Log first few properties to check listing type
+        if (allProperties.length > 0) {
+          log("First property listing type: " + allProperties[0].properties?.hs_listing_type);
+        }
+        
+        filteredProperties = allProperties.filter(property => {
+          const props = property.properties || {};
+          
+          // First check: Only include properties with desired statuses
+          if (!props.cg_status || !includedStatuses.includes(props.cg_status)) {
+            return false;
+          }
+          
+          // Search filter - check multiple fields
+          if (filters.search) {
+            const searchFields = [
+              props.hs_listing_type,
+              props.cg_project,
+              props.cg_stage,
+              props.cg_dp_lot,
+              props.cg_mp_lot,
+              props.hs_address_1,
+              props.cg_house_type,
+              props.cg_land_type,
+              props.cg_aspect,
+              props.cg_title_type,
+              props.hs_neighborhood,
+              props.hs_city
+            ];
+            
+            const searchText = searchFields.filter(field => field).join(' ').toLowerCase();
+            if (!searchText.includes(filters.search)) {
+              return false;
+            }
+          }
+          
+          // Project filter
+          if (filters.project && props.cg_project !== filters.project) {
+            return false;
+          }
+          
+          // Suburb filter
+          if (filters.suburb && props.hs_city !== filters.suburb) {
+            return false;
+          }
+          
+          // Neighborhood filter
+          if (filters.neighborhood && props.hs_neighborhood !== filters.neighborhood) {
+            return false;
+          }
+          
+          // Listing Type filter
+          if (filters.listingType && props.hs_listing_type !== filters.listingType) {
+            return false;
+          }
+          
+          // Status filter
+          if (filters.status && props.cg_status !== filters.status) {
+            return false;
+          }
+          
+          // Land Shape filter (formerly Land Type)
+          if (filters.landShape && props.cg_land_type !== filters.landShape) {
+            return false;
+          }
+          
+          // Aspect filter
+          if (filters.aspect && props.cg_aspect !== filters.aspect) {
+            return false;
+          }
+          
+          // Title type filter - Case-insensitive comparison
+          if (filters.titleType) {
+            const propTitleType = props.cg_title_type || '';
+            if (!propTitleType || propTitleType.toLowerCase() !== filters.titleType.toLowerCase()) {
+              return false;
+            }
+          }
+          
+          // Registration date filter
+          if (filters.registrationDate) {
+            const regDate = props.cg_registration_date ? new Date(props.cg_registration_date) : null;
+            const today = new Date();
+            const nextThreeMonths = new Date(today);
+            nextThreeMonths.setMonth(today.getMonth() + 3);
+            const nextSixMonths = new Date(today);
+            nextSixMonths.setMonth(today.getMonth() + 6);
+            const endOfYear = new Date(today.getFullYear(), 11, 31);
+            const endOfNextYear = new Date(today.getFullYear() + 1, 11, 31);
+            
+            if (filters.registrationDate === 'next-3-months') {
+              if (!regDate || regDate > nextThreeMonths || regDate < today) return false;
+            } else if (filters.registrationDate === 'next-6-months') {
+              if (!regDate || regDate > nextSixMonths || regDate < today) return false;
+            } else if (filters.registrationDate === 'this-year') {
+              if (!regDate || regDate > endOfYear || regDate < today) return false;
+            } else if (filters.registrationDate === 'next-year') {
+              if (!regDate || regDate > endOfNextYear || regDate < new Date(today.getFullYear() + 1, 0, 1)) return false;
+            } else if (filters.registrationDate === 'registered') {
+              if (!regDate || regDate > today) return false;
+            }
+          }
+          
+          // Storeys filter - Properly handle 3+ filter case
+          if (filters.storeys) {
+            const storeys = parseInt(props.cg_storeys || '0');
+            
+            if (filters.storeys === '1' && storeys !== 1) {
+              return false;
+            } else if (filters.storeys === '2' && storeys !== 2) {
+              return false;
+            } else if (filters.storeys === '3+') {
+              // Only match properties with 3 or more storeys
+              if (storeys < 3) return false;
+            }
+          }
+          
+          // Price filter
+          if (filters.priceMin || filters.priceMax) {
+            const price = parseFloat(props.hs_price || props.cg_listed_package_price || 
+                         props.cg_build_list_price || props.cg_land_release_price || 0);
+            if (filters.priceMin && price < filters.priceMin) return false;
+            if (filters.priceMax && price > filters.priceMax) return false;
+          }
+          
+          // Land size filter
+          if (filters.landSizeMin || filters.landSizeMax) {
+            const landSize = parseFloat(props.hs_lot_size || 0);
+            if (filters.landSizeMin && landSize < filters.landSizeMin) return false;
+            if (filters.landSizeMax && landSize > filters.landSizeMax) return false;
+          }
+          
+          // Build size filter
+          if (filters.buildSizeMin || filters.buildSizeMax) {
+            const buildSize = parseFloat(props.cg_total_build_size || 0);
+            if (filters.buildSizeMin && buildSize < filters.buildSizeMin) return false;
+            if (filters.buildSizeMax && buildSize > filters.buildSizeMax) return false;
+          }
+          
+          // Frontage filter
+          if (filters.frontageMin || filters.frontageMax) {
+            const frontage = parseFloat(props.cg_frontage || 0);
+            if (filters.frontageMin && frontage < filters.frontageMin) return false;
+            if (filters.frontageMax && frontage > filters.frontageMax) return false;
+          }
+          
+          // Depth filter
+          if (filters.depthMin || filters.depthMax) {
+            const depth = parseFloat(props.cg_depth || 0);
+            if (filters.depthMin && depth < filters.depthMin) return false;
+            if (filters.depthMax && depth > filters.depthMax) return false;
+          }
+          
+          // Bedrooms filter
+          if (filters.minBedrooms && parseInt(props.hs_bedrooms || 0) < filters.minBedrooms) {
+            return false;
+          }
+          
+          // Bathrooms filter
+          if (filters.minBathrooms && parseInt(props.hs_bathrooms || 0) < filters.minBathrooms) {
+            return false;
+          }
+          
+          // Car spaces filter
+          if (filters.minCarSpaces && parseInt(props.cg_car || 0) < filters.minCarSpaces) {
+            return false;
+          }
+          
+          return true;
+        });
+        
+        // Reset to first page when filters change
+        currentPage = 1;
+        
+        // Apply sorting
+        sortProperties();
+        
+        // Render the filtered properties
+        renderProperties();
+        
+        // Update pagination
+        updatePagination();
+        
+        // Update results count
+        updateResultsCount();
+        
+        log(`Filtered to ${filteredProperties.length} properties`);
+      }
+      
+      // Update results count display
+      function updateResultsCount() {
+        const container = document.getElementById('results-count');
+        if (!container) return;
+        
+        if (filteredProperties.length === 0) {
+          container.textContent = 'No properties match your current filters.';
+        } else if (filteredProperties.length === 1) {
+          container.textContent = '1 property found';
+        } else {
+          container.textContent = `${filteredProperties.length} properties found`;
+        }
+      }
+      
+      // Render filtered properties for the current page
+      function renderProperties() {
+        const container = document.getElementById('properties-container');
+        if (!container) return;
+        
+        // Calculate page properties
+        const startIndex = (currentPage - 1) * propertiesPerPage;
+        const endIndex = startIndex + propertiesPerPage;
+        const paginatedProperties = filteredProperties.slice(startIndex, endIndex);
+        
+        if (filteredProperties.length === 0) {
+          container.innerHTML = `
+            <div class="no-results">
+              <h3>No Properties Found</h3>
+              <p>No properties match your current filters. Try adjusting your search criteria.</p>
+            </div>
+          `;
+          return;
+        }
+        
+        let html = '<div class="properties-grid">';
+        
+        // Add each property card
+        paginatedProperties.forEach(property => {
+          const props = property.properties || {};
+          const id = property.id || '';
+          
+          // Get all details with proper null handling
+          const rawListingType = props.hs_listing_type || props.cg_listing_type || '';
+          const title = formatListingType(rawListingType);
+          const project = props.cg_project || '';
+          const stage = props.cg_stage || '';
+          const dpLot = props.cg_dp_lot || '';
+          const mpLot = props.cg_mp_lot || '';
+          const suburb = props.hs_city || '';
+          const neighborhood = props.hs_neighborhood || '';
+          
+          // Get formatted status and CSS class
+          const statusRaw = props.cg_status || '';
+          const status = formatFieldName(statusRaw);
+          const statusClass = getStatusClass(statusRaw);
+          
+          const bedrooms = props.hs_bedrooms || '';
+          const bathrooms = props.hs_bathrooms || '';
+          const aspect = props.cg_aspect || 'N/A';
+          const titleType = props.cg_title_type || '';
+          const frontage = props.cg_frontage || '';
+          const depth = props.cg_depth || '';
+          const registrationDate = props.cg_registration_date || '';
+          
+          // Get price from various fields - prioritize cg_listed_package_price
+          let price = props.cg_listed_package_price || props.hs_price || 
+                     props.cg_build_list_price || props.cg_land_release_price || '';
+          
+          // Get more details
+          const buildSize = props.cg_total_build_size || '';
+          const lotSize = props.hs_lot_size || '';
+          const landShape = formatFieldName(props.cg_land_type || '');
+          const houseType = formatFieldName(props.cg_house_type || '');
+          const address = props.hs_address_1 || '';
+          
+          // Check if it's a new listing (for demo purposes, random)
+          const isNew = Math.random() > 0.8; // 20% chance to be marked as new
+          
+          // Check if it's a land listing
+          const isLandOnly = rawListingType.toLowerCase().includes('land only') || 
+                            rawListingType.toLowerCase() === 'land';
+          
+          // UPDATED: Land size is first spec, show title type, aspect and registration date
+          html += `
+            <div class="property-card ${isNew ? 'new-listing' : ''}">
+              <a href="property-detail?id=${id}" class="property-card-link">                
+                <div class="property-header">
+                  <div class="property-status ${statusClass}">${status}</div>
+                  <div class="property-price">${formatPrice(price)}</div>
+                </div>
+                
+                ${titleType ? `<div class="title-type-badge">${titleType}</div>` : ''}
+                
+                <div class="property-content">
+                  <h3 class="property-title">${title}</h3>
+                  
+                  <div class="property-location">
+                    <i class="fas fa-map-marker-alt"></i>
+                    ${project ? formatFieldName(project) : ''}
+                    ${stage ? ` • <strong>Stage:</strong> ${formatFieldName(stage)}` : ''}
+                    ${dpLot ? ` • <strong>DP Lot:</strong> ${dpLot}` : ''}
+                    ${mpLot ? ` • <strong>MP Lot:</strong> ${mpLot}` : ''}
+                  </div>
+                  
+                  ${suburb ? `
+                  <div class="property-suburb">
+                    <i class="fas fa-city"></i>
+                    <strong>Suburb:</strong> ${suburb}
+                  </div>` : ''}
+                  
+                  ${neighborhood ? `
+                  <div class="property-neighborhood">
+                    <i class="fas fa-building"></i>
+                    <strong>Neighborhood:</strong> ${neighborhood}
+                  </div>` : ''}
+                  
+                  ${registrationDate ? `
+                  <div class="registration-date">
+                    <i class="fas fa-calendar-check"></i>
+                    Registration: ${formatDate(registrationDate)}
+                  </div>` : ''}
+                  
+                  <div class="property-specs-grid">
+                    <div class="spec-item">
+                      <i class="fas fa-ruler-combined"></i>
+                      <span>${lotSize || 'N/A'}</span>
+                      <label>Land m²</label>
+                    </div>
+                    <div class="spec-item">
+                      <i class="fas fa-compass"></i>
+                      <span>${aspect || 'N/A'}</span>
+                      <label>Aspect</label>
+                    </div>
+                    <div class="spec-item">
+                      <i class="fas fa-arrows-alt-h"></i>
+                      <span>${frontage || 'N/A'}</span>
+                      <label>Frontage m</label>
+                    </div>
+                  </div>
+                  
+                  <div class="property-details">
+                    ${titleType ? `
+                    <div class="detail-row">
+                      <div class="detail-label">Title Type:</div>
+                      <div class="detail-value">${titleType}</div>
+                    </div>` : ''}
+                    ${lotSize ? `
+                    <div class="detail-row">
+                      <div class="detail-label">Land Size:</div>
+                      <div class="detail-value">${lotSize}m²</div>
+                    </div>` : ''}
+                    ${frontage ? `
+                    <div class="detail-row">
+                      <div class="detail-label">Frontage:</div>
+                      <div class="detail-value">${frontage}m</div>
+                    </div>` : ''}
+                    ${depth ? `
+                    <div class="detail-row">
+                      <div class="detail-label">Depth:</div>
+                      <div class="detail-value">${depth}m</div>
+                    </div>` : ''}
+                    ${aspect ? `
+                    <div class="detail-row">
+                      <div class="detail-label">Aspect:</div>
+                      <div class="detail-value">${aspect}</div>
+                    </div>` : ''}
+                    ${!isLandOnly && buildSize ? `
+                    <div class="detail-row">
+                      <div class="detail-label">Build Size:</div>
+                      <div class="detail-value">${buildSize}m²</div>
+                    </div>` : ''}
+                  </div>
+                  
+                  <div class="property-cta">View Details</div>
+                </div>
+              </a>
+            </div>
+          `;
+        });
+        
+        html += '</div>';
+        container.innerHTML = html;
+        
+        log(`Rendered ${paginatedProperties.length} properties for page ${currentPage}`);
+      }
+      
+      // Helper function to get proper status class
+      function getStatusClass(status) {
+        if (!status) return '';
+        
+        const statusMap = {
+          'cg_available': 'available',
+          'cg_under_offer': 'under-offer',
+          'cg_hold': 'hold',
+          'cg_exclusive': 'exclusive'
+        };
+        
+        return statusMap[status] || status.replace('cg_', '').toLowerCase();
+      }
+      
+      // Update pagination controls
+      function updatePagination() {
+        const paginationContainer = document.getElementById('pagination');
+        if (!paginationContainer) return;
+        
+        const totalPages = Math.ceil(filteredProperties.length / propertiesPerPage);
+        
+        // If only one page or no results, hide pagination
+        if (totalPages <= 1) {
+          paginationContainer.style.display = 'none';
+          return;
+        }
+        
+        paginationContainer.style.display = 'flex';
+        let paginationHtml = '';
+        
+        // Previous button
+        paginationHtml += `
+          <button class="pagination-btn prev-btn" ${currentPage === 1 ? 'disabled' : ''}>
+            <i class="fas fa-chevron-left"></i>
+          </button>
+        `;
+        
+        // Page numbers
+        const maxDisplayedPages = 5;
+        let startPage = Math.max(1, currentPage - Math.floor(maxDisplayedPages / 2));
+        let endPage = Math.min(totalPages, startPage + maxDisplayedPages - 1);
+        
+        // Adjust start page if end page is at maximum
+        if (endPage === totalPages) {
+          startPage = Math.max(1, endPage - maxDisplayedPages + 1);
+        }
+        
+        // First page
+        if (startPage > 1) {
+          paginationHtml += `<button class="pagination-btn" data-page="1">1</button>`;
+          if (startPage > 2) {
+            paginationHtml += `<span class="pagination-ellipsis">...</span>`;
+          }
+        }
+        
+        // Page numbers
+        for (let i = startPage; i <= endPage; i++) {
+          paginationHtml += `
+            <button class="pagination-btn ${i === currentPage ? 'active' : ''}" data-page="${i}">
+              ${i}
+            </button>
+          `;
+        }
+        
+        // Last page
+        if (endPage < totalPages) {
+          if (endPage < totalPages - 1) {
+            paginationHtml += `<span class="pagination-ellipsis">...</span>`;
+          }
+          paginationHtml += `<button class="pagination-btn" data-page="${totalPages}">${totalPages}</button>`;
+        }
+        
+        // Next button
+        paginationHtml += `
+          <button class="pagination-btn next-btn" ${currentPage === totalPages ? 'disabled' : ''}>
+            <i class="fas fa-chevron-right"></i>
+          </button>
+        `;
+        
+        paginationContainer.innerHTML = paginationHtml;
+        
+        // Add event listeners to pagination buttons
+        document.querySelectorAll('.pagination-btn').forEach(button => {
+          button.addEventListener('click', function() {
+            if (this.hasAttribute('disabled')) return;
+            
+            if (this.classList.contains('prev-btn')) {
+              if (currentPage > 1) {
+                currentPage--;
+                renderProperties();
+                updatePagination();
+              }
+            } else if (this.classList.contains('next-btn')) {
+              if (currentPage < totalPages) {
+                currentPage++;
+                renderProperties();
+                updatePagination();
+              }
+            } else {
+              const page = parseInt(this.getAttribute('data-page'));
+              if (page !== currentPage) {
+                currentPage = page;
+                renderProperties();
+                updatePagination();
+              }
+            }
+            
+            // Scroll to top of properties container
+            document.getElementById('properties-container').scrollIntoView({ behavior: 'smooth' });
+          });
+        });
+      }
+      
+      // Helper functions
+      function formatFieldName(fieldName) {
+        if (!fieldName) return '';
+        return String(fieldName).replace(/^(cg_|hs_)/, '')
+          .split('_')
+          .map(word => word.charAt(0).toUpperCase() + word.slice(1))
+          .join(' ');
+      }
+      
+      // Helper function to format listing type specifically
+      function formatListingType(listingType) {
+        if (!listingType) return 'Property';
+        
+        // Convert to string and lowercase for consistent comparison
+        const rawType = String(listingType).toLowerCase();
+        
+        // Remove prefixes like cg_ or hs_
+        const cleanType = rawType.replace(/^(cg_|hs_)/, '');
+        
+        // Handle specific cases
+        if (cleanType === 'land') {
+          return 'Land';
+        }
+        
+        if (cleanType === 'house' || cleanType.includes('house_and_land') || cleanType.includes('house-and-land')) {
+          return 'House and Land';
+        }
+        
+        if (cleanType === 'townhouse') {
+          return 'Townhouse';
+        }
+        
+        if (cleanType === 'apartment') {
+          return 'Apartment';
+        }
+        
+        // Default case: capitalize first letter of each word
+        return cleanType
+          .split(/[_\s-]/)  // Split on underscore, space, or hyphen
+          .map(word => word.charAt(0).toUpperCase() + word.slice(1))
+          .join(' ');
+      }
+      
+      function formatPrice(price) {
+        if (!price) return 'Contact for pricing';
+        const numericPrice = String(price).replace(/[^\d.]/g, '');
+        if (!numericPrice) return 'Contact for pricing';
+        return '$' + parseFloat(numericPrice).toLocaleString();
+      }
+      
+      function formatDate(dateValue) {
+        if (!dateValue) return 'Not specified';
+        
+        // Handle different date formats
+        let date;
+        
+        // If it's a timestamp
+        if (!isNaN(dateValue)) {
+          date = new Date(parseInt(dateValue));
+        } else {
+          // Try to parse as ISO date
+          date = new Date(dateValue);
+        }
+        
+        // Check if date is valid
+        if (isNaN(date.getTime())) {
+          return dateValue; // Return original if not parseable
+        }
+        
+        // Format the date
+        const options = { year: 'numeric', month: 'short', day: 'numeric' };
+        return date.toLocaleDateString('en-AU', options);
+      }
+      
+      // Initialize the page
+      initializeUIInteractions();
+      initializeFilters();
+      loadProperties();
+    });
+  </script>
+</body>
+</html>
