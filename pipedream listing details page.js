@@ -67,7 +67,7 @@ export default defineComponent({
                 cg_house_type: "Single Story",
                 hs_listing_type: "House & Land Package",
                 cg_description: "This is a mock property since no ID was provided.",
-                cg_title_type: "Torrens",
+                cg_title: "Torrens",
                 cg_frontage: "15",
                 cg_depth: "32",
                 cg_aspect: "North",
@@ -106,7 +106,7 @@ export default defineComponent({
         "cg_status", "hs_price", "cg_build_list_price", "cg_listed_package_price", 
         "cg_land_release_price", "cg_land_type", "hs_lot_size", "cg_total_build_size", 
         "hs_bedrooms", "hs_bathrooms", "cg_car", "cg_house_type", "cg_facade", 
-        "cg_title_type", "hs_listing_type", "cg_description", "cg_features_list",
+        "cg_title", "hs_listing_type", "cg_description", "cg_features_list",
         "hs_address_1", 
         
         // Location details
@@ -163,7 +163,7 @@ export default defineComponent({
         console.log(`Property Type: ${property.properties?.hs_listing_type}`);
         console.log(`Property Suburb: ${property.properties?.hs_city}`);
         console.log(`Property Storeys: ${property.properties?.cg_storeys}`);
-        console.log(`Property Title Type: ${property.properties?.cg_title_type}`);
+        console.log(`Property Title: ${property.properties?.cg_title}`);
       } catch (e) {
         console.error(`JSON parse error: ${e.message}`);
         return $.respond({
