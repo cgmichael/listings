@@ -370,6 +370,39 @@
     font-size: 16px;
   }
   
+  /* Title type highlight box */
+  .title-type-highlight-box {
+    background-color: #f7f1e6;
+    border-left: 4px solid #bf9959;
+    padding: 15px 20px;
+    margin: 15px 0 25px 0;
+    border-radius: 0 10px 10px 0;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  
+  .title-type-highlight-box i {
+    color: #bf9959;
+    font-size: 20px;
+  }
+  
+  .title-type-content {
+    flex: 1;
+  }
+  
+  .title-type-label {
+    font-weight: 600;
+    color: #2d3748;
+    margin-bottom: 4px;
+  }
+  
+  .title-type-value {
+    font-size: 18px;
+    font-weight: 700;
+    color: #bf9959;
+  }
+  
   /* Registration Date Highlight */
   .registration-date {
     background-color: #edfcef;
@@ -723,6 +756,16 @@
           <strong>Neighborhood:</strong> ${neighborhood}
         </div>` : ''}
         
+        <!-- Title Type Highlight Box - Added -->
+        ${titleType ? `
+        <div class="title-type-highlight-box">
+          <i class="fas fa-file-contract"></i>
+          <div class="title-type-content">
+            <div class="title-type-label">Title Type</div>
+            <div class="title-type-value">${titleType}</div>
+          </div>
+        </div>` : ''}
+        
         <!-- Registration Date Display -->
         ${registrationDate ? `
         <div class="registration-date">
@@ -792,8 +835,14 @@
           ${description}
         </div>` : ''}
         
-        <!-- Key specs - emphasize land size -->
+        <!-- Key specs - emphasize title type -->
         <div class="property-specs-grid">
+          ${titleType ? `
+          <div class="spec-item">
+            <i class="fas fa-file-contract"></i>
+            <span>${titleType}</span>
+            <label>Title Type</label>
+          </div>` : ''}
           ${lotSize ? `
           <div class="spec-item">
             <i class="fas fa-ruler-combined"></i>
@@ -817,12 +866,6 @@
             <i class="fas fa-compass"></i>
             <span>${aspect}</span>
             <label>Aspect</label>
-          </div>` : ''}
-          ${titleType ? `
-          <div class="spec-item">
-            <i class="fas fa-file-contract"></i>
-            <span>${titleType}</span>
-            <label>Title Type</label>
           </div>` : ''}
           ${storeys ? `
           <div class="spec-item">
@@ -1168,6 +1211,7 @@
       .join(' ');
   }
   
+  // Helper function to format listing type specifically
   function formatListingType(listingType) {
     if (!listingType) return 'Property';
     
