@@ -756,7 +756,7 @@
           <strong>Neighborhood:</strong> ${neighborhood}
         </div>` : ''}
         
-        <!-- Title Type Highlight Box - Added -->
+        <!-- Title Type Highlight Box - Enhanced Prominence -->
         ${titleType ? `
         <div class="title-type-highlight-box">
           <i class="fas fa-file-contract"></i>
@@ -867,7 +867,7 @@
             <span>${aspect}</span>
             <label>Aspect</label>
           </div>` : ''}
-          ${storeys ? `
+          ${!isLandOnly && storeys ? `
           <div class="spec-item">
             <i class="fas fa-building"></i>
             <span>${storeys}</span>
@@ -1095,7 +1095,7 @@
                 <div class="document-title">Property Brochure</div>
               </a>` : ''}
               
-              ${floorplanUrl ? `
+              ${floorplanUrl && !isLandOnly ? `
               <a href="${floorplanUrl}" class="document-card" target="_blank">
                 <div class="document-icon"><i class="far fa-building"></i></div>
                 <div class="document-title">Floor Plan</div>
@@ -1107,13 +1107,13 @@
                 <div class="document-title">Contract</div>
               </a>` : ''}
               
-              ${inclusionsUrl ? `
+              ${inclusionsUrl && !isLandOnly ? `
               <a href="${inclusionsUrl}" class="document-card" target="_blank">
                 <div class="document-icon"><i class="far fa-list-alt"></i></div>
                 <div class="document-title">Inclusions</div>
               </a>` : ''}
               
-              ${specificationsUrl ? `
+              ${specificationsUrl && !isLandOnly ? `
               <a href="${specificationsUrl}" class="document-card" target="_blank">
                 <div class="document-icon"><i class="far fa-file-code"></i></div>
                 <div class="document-title">Specifications</div>
@@ -1177,6 +1177,7 @@
     const props = property.properties || {};
     // Fix: Use both field names for listing type
     const listingType = props.hs_listing_type || props.cg_listing_type || '';
+    // Make sure title type (cg_title) is included in the page title
     const title = formatListingType(listingType) + 
                  (props.cg_project ? ` in ${props.cg_project}` : '') +
                  (props.cg_dp_lot ? ` - Lot ${props.cg_dp_lot}` : '') +
@@ -1250,7 +1251,7 @@
       .join(' ');
   }
   
-  // NEW: Helper function to better detect land listings
+  // Enhanced: Helper function to better detect land listings
   function isLandListing(listingType) {
     if (!listingType) return false;
     
@@ -1263,7 +1264,7 @@
            rawType.includes('land only') || 
            rawType.includes('land_only') || 
            rawType.includes('land-only') ||
-           (rawType.includes('land') && !rawType.includes('house')) && !rawType.includes('package');
+           (rawType.includes('land') && !rawType.includes('house') && !rawType.includes('package'));
   }
   
   function formatPrice(price) {
