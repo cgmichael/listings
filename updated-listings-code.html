@@ -1008,7 +1008,7 @@
         </div>
       </div>
       
-      <!-- Price and Last Row of Filters -->
+      <!-- Price Filter -->
       <div class="property-filters" id="advanced-filters-4" style="display: flex; margin-top: 16px;">
         <div class="filter-group">
           <label for="price-filter">Price Range</label>
@@ -1021,21 +1021,11 @@
             <option value="1500000+">$1,500,000+</option>
           </select>
         </div>
-        
         <div class="filter-group">
-          <label for="project-secondary-filter">Secondary Project</label>
-          <select id="project-secondary-filter" class="filter-select">
-            <option value="">All Projects</option>
-            <!-- Will be populated dynamically -->
-          </select>
+          <!-- Empty placeholder for grid alignment -->
         </div>
-        
         <div class="filter-group">
-          <label for="suburb-secondary-filter">Secondary Suburb</label>
-          <select id="suburb-secondary-filter" class="filter-select">
-            <option value="">All Suburbs</option>
-            <!-- Will be populated dynamically -->
-          </select>
+          <!-- Empty placeholder for grid alignment -->
         </div>
       </div>
       
@@ -1258,9 +1248,7 @@
         // Simple select filters
         const simpleFilters = [
           {id: 'project-filter', key: 'project'},
-          {id: 'project-secondary-filter', key: 'project'},
           {id: 'suburb-filter', key: 'suburb'},
-          {id: 'suburb-secondary-filter', key: 'suburb'},
           {id: 'neighborhood-filter', key: 'neighborhood'},
           {id: 'listing-type-filter', key: 'listingType'},
           {id: 'status-filter', key: 'status'},
@@ -1453,6 +1441,7 @@
             filters.project = '';
             const element = document.getElementById('project-filter');
             if (element) element.value = '';
+            filterProperties();
           });
           hasActiveFilters = true;
         }
@@ -1462,6 +1451,7 @@
             filters.suburb = '';
             const element = document.getElementById('suburb-filter');
             if (element) element.value = '';
+            filterProperties();
           });
           hasActiveFilters = true;
         }
@@ -1471,6 +1461,7 @@
             filters.neighborhood = '';
             const element = document.getElementById('neighborhood-filter');
             if (element) element.value = '';
+            filterProperties();
           });
           hasActiveFilters = true;
         }
@@ -1480,6 +1471,7 @@
             filters.listingType = '';
             const element = document.getElementById('listing-type-filter');
             if (element) element.value = '';
+            filterProperties();
           });
           hasActiveFilters = true;
         }
@@ -1888,7 +1880,7 @@
             cg_land_type: ['Corner', 'Standard', 'Premium', 'Waterfront'][index % 4],
             cg_facade: ['Modern', 'Contemporary', 'Traditional', 'Hampton'][index % 4],
             cg_aspect: aspects[index % 8],
-            cg_title_type: titleTypes[index % 4],
+            cg_title: titleTypes[index % 4],
             cg_frontage: (10 + (index % 15)).toString(),
             cg_depth: (25 + (index % 20)).toString(),
             cg_registration_date: new Date(2024, 5 + (index % 12), 15 + (index % 10)).toISOString().split('T')[0],
@@ -1954,9 +1946,9 @@
             listingTypes.add(props.hs_listing_type);
           }
           
-          // Add title type if available
-          if (props.cg_title_type) {
-            titleTypes.add(props.cg_title_type);
+          // Add title type if available - FIXED: use cg_title field
+          if (props.cg_title) {
+            titleTypes.add(props.cg_title);
           }
           
           // Add neighborhood if available
@@ -1977,11 +1969,9 @@
         
         // Populate project filters
         populateSelect('project-filter', projects);
-        populateSelect('project-secondary-filter', projects);
         
         // Populate suburb filters
         populateSelect('suburb-filter', suburbs);
-        populateSelect('suburb-secondary-filter', suburbs);
         
         // Populate neighborhood filter
         populateSelect('neighborhood-filter', neighborhoods);
@@ -2073,7 +2063,7 @@
               props.cg_house_type,
               props.cg_land_type,
               props.cg_aspect,
-              props.cg_title_type,
+              props.cg_title,
               props.hs_neighborhood,
               props.hs_city
             ];
@@ -2119,9 +2109,9 @@
             return false;
           }
           
-          // Title type filter - Case-insensitive comparison
+          // Title type filter - Case-insensitive comparison - FIXED: use cg_title field
           if (filters.titleType) {
-            const propTitleType = props.cg_title_type || '';
+            const propTitleType = props.cg_title || '';
             if (!propTitleType || propTitleType.toLowerCase() !== filters.titleType.toLowerCase()) {
               return false;
             }
@@ -2296,7 +2286,7 @@
           const bedrooms = props.hs_bedrooms || '';
           const bathrooms = props.hs_bathrooms || '';
           const aspect = props.cg_aspect || 'N/A';
-          const titleType = props.cg_title_type || '';
+          const titleType = props.cg_title || '';
           const frontage = props.cg_frontage || '';
           const depth = props.cg_depth || '';
           const registrationDate = props.cg_registration_date || '';
