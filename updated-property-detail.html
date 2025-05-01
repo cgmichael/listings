@@ -658,14 +658,14 @@
     // Get all property data with proper null handling
     const id = property.id || '';
     // Fix: Use both possible field names for listing type with consistent priority
-    const rawListingType = props.hs_listing_type || props.cg_listing_type || '';
+    const rawListingType = props.hs_listing_type || props.listing_type || '';
     const title = formatListingType(rawListingType);
-    const project = props.cg_project || '';
-    const stage = props.cg_stage || '';
-    const dpLot = props.cg_dp_lot || '';
-    const mpLot = props.cg_mp_lot || '';
-    const status = formatFieldName(props.cg_status || '');
-    const statusClass = getStatusClass(props.cg_status || '');
+    const project = props.project || '';
+    const stage = props.stage || '';
+    const dpLot = props.dp_lot || '';
+    const mpLot = props.mp_lot || '';
+    const status = formatFieldName(props.status || '');
+    const statusClass = getStatusClass(props.status || '');
     const neighborhood = props.hs_neighborhood || '';
     const suburb = props.hs_city || '';
     
@@ -674,48 +674,48 @@
     
     // Land details - prioritize these as we're a land developer
     const lotSize = props.hs_lot_size || '';
-    const landShape = formatFieldName(props.cg_land_type || '');
-    const orientation = props.cg_orientation || '';
-    const aspect = props.cg_aspect || ''; 
-    const frontage = props.cg_frontage || '';
-    const depth = props.cg_depth || '';
-    const setback = props.cg_setback || '';
-    const titleType = props.cg_title || '';
+    const landShape = formatFieldName(props.land_type || '');
+    const orientation = props.orientation || '';
+    const aspect = props.aspect || ''; 
+    const frontage = props.frontage || '';
+    const depth = props.depth || '';
+    const setback = props.setback || '';
+    const titleType = props.title || '';
     
     // Building details (secondary information)
     const bedrooms = props.hs_bedrooms || '0';
     const bathrooms = props.hs_bathrooms || '0';
-    const carSpaces = props.cg_car || '0';
-    const buildSize = props.cg_total_build_size || '';
-    const houseType = formatFieldName(props.cg_house_type || '');
+    const carSpaces = props.car || '0';
+    const buildSize = props.total_build_size || '';
+    const houseType = formatFieldName(props.house_type || '');
     const address = props.hs_address_1 || '';
-    const facade = props.cg_facade || '';
-    const constructionType = formatFieldName(props.cg_construction_type || '');
-    const ceilingHeight = props.cg_ceiling_height || '';
-    const energyRating = props.cg_energy_rating || '';
-    const storeys = props.cg_storeys || '';
+    const facade = props.facade || '';
+    const constructionType = formatFieldName(props.construction_type || '');
+    const ceilingHeight = props.ceiling_height || '';
+    const energyRating = props.energy_rating || '';
+    const storeys = props.storeys || '';
     
     // Get price from various fields
-    let price = props.cg_listed_package_price || props.hs_price || 
-               props.cg_build_list_price || props.cg_land_release_price || '';
+    let price = props.listed_package_price || props.hs_price || 
+               props.build_list_price || props.land_release_price || '';
     
     // Dates
-    const estimatedCompletion = props.cg_estimated_completion || '';
-    const settlementDate = props.cg_settlement_date || '';
-    const landTitleDate = props.cg_land_title_date || '';
-    const registrationDate = props.cg_registration_date || '';
+    const estimatedCompletion = props.estimated_completion || '';
+    const settlementDate = props.settlement_date || '';
+    const landTitleDate = props.land_title_date || '';
+    const registrationDate = props.registration_date || '';
     
     // Content
-    const description = props.cg_description || '';
-    const features = props.cg_features_list || '';
+    const description = props.description || '';
+    const features = props.features_list || '';
     
     // Document URLs
-    const brochureUrl = props.cg_brochure_url || '';
-    const masterplanUrl = props.cg_masterplan_url || '';
-    const floorplanUrl = props.cg_floorplan_url || '';
-    const contractUrl = props.cg_contract_url || '';
-    const inclusionsUrl = props.cg_inclusions_url || '';
-    const specificationsUrl = props.cg_specifications_url || '';
+    const brochureUrl = props.brochure_url || '';
+    const masterplanUrl = props.masterplan_url || '';
+    const floorplanUrl = props.floorplan_url || '';
+    const contractUrl = props.contract_url || '';
+    const inclusionsUrl = props.inclusions_url || '';
+    const specificationsUrl = props.specifications_url || '';
     
     // Check if we have any documents
     const hasDocuments = brochureUrl || masterplanUrl || floorplanUrl || 
@@ -756,7 +756,7 @@
           <strong>Neighborhood:</strong> ${neighborhood}
         </div>` : ''}
         
-        <!-- Title Type Highlight Box - Enhanced Prominence -->
+        <!-- Title Type Highlight Box - Enhanced Prominence, shown only once here -->
         ${titleType ? `
         <div class="title-type-highlight-box">
           <i class="fas fa-file-contract"></i>
@@ -802,11 +802,7 @@
               <div class="land-detail-value">${depth} m</div>
             </div>` : ''}
             
-            ${titleType ? `
-            <div class="land-detail-item">
-              <div class="land-detail-label">Title Type</div>
-              <div class="land-detail-value">${titleType}</div>
-            </div>` : ''}
+            <!-- Title type removed from here since it's shown prominently above -->
             
             ${landShape ? `
             <div class="land-detail-item">
@@ -837,12 +833,7 @@
         
         <!-- Key specs - emphasize title type -->
         <div class="property-specs-grid">
-          ${titleType ? `
-          <div class="spec-item">
-            <i class="fas fa-file-contract"></i>
-            <span>${titleType}</span>
-            <label>Title Type</label>
-          </div>` : ''}
+          <!-- Title type removed from here as it's shown prominently above -->
           ${lotSize ? `
           <div class="spec-item">
             <i class="fas fa-ruler-combined"></i>
@@ -1142,14 +1133,15 @@
   function getStatusClass(status) {
     if (!status) return '';
     
+    // Updated to work with modified status values (no cg_ prefix, capitalized)
     const statusMap = {
-      'cg_available': 'available',
-      'cg_under_offer': 'under-offer',
-      'cg_hold': 'hold',
-      'cg_exclusive': 'exclusive'
+      'Available': 'available',
+      'Under Offer': 'under-offer',
+      'Hold': 'hold',
+      'Exclusive': 'exclusive'
     };
     
-    return statusMap[status] || status.replace('cg_', '').toLowerCase();
+    return statusMap[status] || status.toLowerCase();
   }
   
   // Tab switching function
@@ -1176,12 +1168,12 @@
     // Update page title
     const props = property.properties || {};
     // Fix: Use both field names for listing type
-    const listingType = props.hs_listing_type || props.cg_listing_type || '';
-    // Make sure title type (cg_title) is included in the page title
+    const listingType = props.hs_listing_type || props.listing_type || '';
+    // Make sure title type (title field, formerly cg_title) is included in the page title
     const title = formatListingType(listingType) + 
-                 (props.cg_project ? ` in ${props.cg_project}` : '') +
-                 (props.cg_dp_lot ? ` - Lot ${props.cg_dp_lot}` : '') +
-                 (props.cg_title ? ` - ${props.cg_title} Title` : '') +
+                 (props.project ? ` in ${props.project}` : '') +
+                 (props.dp_lot ? ` - Lot ${props.dp_lot}` : '') +
+                 (props.title ? ` - ${props.title} Title` : '') +
                  (props.hs_neighborhood ? ` - ${props.hs_neighborhood}` : '') +
                  (props.hs_city ? ` - ${props.hs_city}` : '');
     
@@ -1196,22 +1188,25 @@
     }
     
     const lotText = props.hs_lot_size ? `${props.hs_lot_size}m² ` : '';
-    const frontageText = props.cg_frontage ? `${props.cg_frontage}m frontage ` : '';
-    const titleText = props.cg_title ? `${props.cg_title} title ` : '';
-    const registrationText = props.cg_registration_date ? `Registration date: ${formatDate(props.cg_registration_date)} ` : '';
+    const frontageText = props.frontage ? `${props.frontage}m frontage ` : '';
+    const titleText = props.title ? `${props.title} title ` : '';
+    const registrationText = props.registration_date ? `Registration date: ${formatDate(props.registration_date)} ` : '';
     const suburbText = props.hs_city ? `in ${props.hs_city} ` : '';
     
     // Fix: Use both field names for listing type
-    const formattedListingType = formatListingType(props.hs_listing_type || props.cg_listing_type || '');
+    const formattedListingType = formatListingType(props.hs_listing_type || props.listing_type || '');
     
-    const description = `${lotText}${frontageText}${titleText}${registrationText}${formattedListingType} ${suburbText}${props.cg_project ? `in ${props.cg_project}` : ''} ${props.cg_stage ? `Stage ${props.cg_stage}` : ''} ${props.cg_dp_lot ? `DP Lot ${props.cg_dp_lot}` : ''}`;
+    const description = `${lotText}${frontageText}${titleText}${registrationText}${formattedListingType} ${suburbText}${props.project ? `in ${props.project}` : ''} ${props.stage ? `Stage ${props.stage}` : ''} ${props.dp_lot ? `DP Lot ${props.dp_lot}` : ''}`;
     metaDescription.setAttribute('content', description);
   }
   
   // Formatting helper functions
   function formatFieldName(fieldName) {
     if (!fieldName) return '';
-    return String(fieldName).replace(/^(cg_|hs_)/, '')
+    
+    // Field names should already be properly formatted from the backend
+    // but we'll handle any additional formatting needed
+    return String(fieldName)
       .split('_')
       .map(word => word.charAt(0).toUpperCase() + word.slice(1))
       .join(' ');
