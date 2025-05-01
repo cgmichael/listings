@@ -97,6 +97,36 @@ export default defineComponent({
         console.log(`Retrieved page with ${data.results?.length || 0} properties`);
         
         if (data.results && data.results.length > 0) {
+          // Process each property to remove cg_ prefixes and capitalize values
+          data.results.forEach(property => {
+            if (property.properties) {
+              const processedProps = {};
+              
+              // Process each property value
+              for (const [key, value] of Object.entries(property.properties)) {
+                if (key.startsWith('cg_')) {
+                  // Create a new key without prefix 
+                  const newKey = key.replace('cg_', '');
+                  
+                  // Format and capitalize value if it's a string
+                  let processedValue = value;
+                  if (typeof value === 'string' && !value.match(/^\d+(\.\d+)?$/)) {
+                    // Don't capitalize numbers
+                    processedValue = formatValueWithCapitalization(value);
+                  }
+                  
+                  processedProps[newKey] = processedValue;
+                } else {
+                  // Keep non-cg properties as they are
+                  processedProps[key] = value;
+                }
+              }
+              
+              // Replace original properties with processed ones
+              property.properties = processedProps;
+            }
+          });
+          
           allResults = [...allResults, ...data.results];
           
           if (data.paging && data.paging.next && data.paging.next.after) {
@@ -115,9 +145,10 @@ export default defineComponent({
       console.log(`Retrieved ${allResults.length} properties in ${Date.now() - startTime}ms`);
       
       // Double-check: Make sure only included statuses came through
+      // Update status check for the renamed properties without cg_ prefix
       let filteredResults = allResults.filter(property => {
-        const status = property.properties?.cg_status;
-        return status && includedStatuses.includes(status);
+        const status = property.properties?.status;
+        return status && includedStatuses.map(s => s.replace('cg_', '')).includes(status.toLowerCase());
       });
       
       if (filteredResults.length < allResults.length) {
@@ -126,28 +157,28 @@ export default defineComponent({
       }
       
       // Add debugging info about available statuses
-      const availableStatuses = [...new Set(allResults.map(p => p.properties?.cg_status).filter(Boolean))];
+      const availableStatuses = [...new Set(allResults.map(p => p.properties?.status).filter(Boolean))];
       console.log("Available statuses in results:", JSON.stringify(availableStatuses));
       
-      // Log available title types for debugging - corrected field name to cg_title
-      const availableTitleTypes = [...new Set(allResults.map(p => p.properties?.cg_title).filter(Boolean))];
+      // Log available title types for debugging - now using property without cg_ prefix
+      const availableTitleTypes = [...new Set(allResults.map(p => p.properties?.title).filter(Boolean))];
       console.log("Available title types:", JSON.stringify(availableTitleTypes));
       
       // Log available suburbs for debugging
       const availableSuburbs = [...new Set(allResults.map(p => p.properties?.hs_city).filter(Boolean))];
       console.log("Available suburbs:", JSON.stringify(availableSuburbs));
       
-      // Log storeys values for debugging
-      const storeysValues = [...new Set(allResults.map(p => p.properties?.cg_storeys).filter(Boolean))];
+      // Log storeys values for debugging - now using property without cg_ prefix
+      const storeysValues = [...new Set(allResults.map(p => p.properties?.storeys).filter(Boolean))];
       console.log("Available storeys values:", JSON.stringify(storeysValues));
       
       // Default sorting: prioritize land-focused options first
       allResults.sort((a, b) => {
-        // First prioritize available properties
-        if (a.properties?.cg_status === 'cg_available' && b.properties?.cg_status !== 'cg_available') {
+        // First prioritize available properties - status field now without cg_ prefix
+        if (a.properties?.status?.toLowerCase() === 'available' && b.properties?.status?.toLowerCase() !== 'available') {
           return -1;
         }
-        if (a.properties?.cg_status !== 'cg_available' && b.properties?.cg_status === 'cg_available') {
+        if (a.properties?.status?.toLowerCase() !== 'available' && b.properties?.status?.toLowerCase() === 'available') {
           return 1;
         }
         
@@ -155,9 +186,9 @@ export default defineComponent({
         const lotSizeA = parseFloat(a.properties?.hs_lot_size || 0);
         const lotSizeB = parseFloat(b.properties?.hs_lot_size || 0);
         
-        // Then prioritize properties with frontage values
-        const frontageA = parseFloat(a.properties?.cg_frontage || 0);
-        const frontageB = parseFloat(b.properties?.cg_frontage || 0);
+        // Then prioritize properties with frontage values - now without cg_ prefix
+        const frontageA = parseFloat(a.properties?.frontage || 0);
+        const frontageB = parseFloat(b.properties?.frontage || 0);
         
         if (frontageA && !frontageB) return -1;
         if (!frontageA && frontageB) return 1;
@@ -207,3 +238,14 @@ export default defineComponent({
     }
   }
 });
+
+// Helper function to format values with capitalization
+function formatValueWithCapitalization(value) {
+  if (!value) return '';
+  
+  // Split by underscores, spaces or hyphens
+  return String(value)
+    .split(/[_\s-]/)
+    .map(word => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase())
+    .join(' ');
+}
