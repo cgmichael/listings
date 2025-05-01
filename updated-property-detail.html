@@ -680,7 +680,7 @@
     const frontage = props.cg_frontage || '';
     const depth = props.cg_depth || '';
     const setback = props.cg_setback || '';
-    const titleType = props.cg_title_type || '';
+    const titleType = props.cg_title || '';
     
     // Building details (secondary information)
     const bedrooms = props.hs_bedrooms || '0';
@@ -1009,7 +1009,7 @@
               <div class="detail-label">Listing Type</div>
               <div class="detail-value">${title}</div>
             </div>
-            ${buildSize ? `
+            ${!isLandOnly && buildSize ? `
             <div class="detail-row">
               <div class="detail-label">Build Size</div>
               <div class="detail-value">${buildSize}m²</div>
@@ -1178,7 +1178,7 @@
     const title = formatListingType(props.hs_listing_type || '') + 
                  (props.cg_project ? ` in ${props.cg_project}` : '') +
                  (props.cg_dp_lot ? ` - Lot ${props.cg_dp_lot}` : '') +
-                 (props.cg_title_type ? ` - ${props.cg_title_type} Title` : '') +
+                 (props.cg_title ? ` - ${props.cg_title} Title` : '') +
                  (props.hs_neighborhood ? ` - ${props.hs_neighborhood}` : '') +
                  (props.hs_city ? ` - ${props.hs_city}` : '');
     
@@ -1194,7 +1194,7 @@
     
     const lotText = props.hs_lot_size ? `${props.hs_lot_size}m² ` : '';
     const frontageText = props.cg_frontage ? `${props.cg_frontage}m frontage ` : '';
-    const titleText = props.cg_title_type ? `${props.cg_title_type} title ` : '';
+    const titleText = props.cg_title ? `${props.cg_title} title ` : '';
     const registrationText = props.cg_registration_date ? `Registration date: ${formatDate(props.cg_registration_date)} ` : '';
     const suburbText = props.hs_city ? `in ${props.hs_city} ` : '';
     
