@@ -1,0 +1,685 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Property Listings</title>
+  
+  <!-- HubSpot Tracking Code -->
+  <script type="text/javascript" id="hs-script-loader" async defer src="//js.hs-scripts.com/24160521.js"></script>
+  
+  <style>
+    /* Main Styles */
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+      background-color: #f9f9f9;
+      color: #333;
+      line-height: 1.6;
+    }
+    
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 20px;
+    }
+    
+    h1, h2, h3 {
+      color: #2c3e50;
+      margin-top: 0;
+    }
+    
+    /* Authentication Overlay */
+    .auth-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(255, 255, 255, 0.97);
+      z-index: 1000;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+    
+    .auth-content {
+      background-color: white;
+      padding: 30px;
+      border-radius: 8px;
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+      width: 100%;
+      max-width: 600px;
+      text-align: center;
+    }
+    
+    /* Form Styles */
+    .manual-form {
+      text-align: left;
+      margin-top: 20px;
+    }
+    
+    .form-group {
+      margin-bottom: 15px;
+    }
+    
+    .form-group label {
+      display: block;
+      margin-bottom: 5px;
+      font-weight: bold;
+    }
+    
+    .form-group input {
+      width: 100%;
+      padding: 10px;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+      font-size: 16px;
+    }
+    
+    .btn {
+      background-color: #3498db;
+      color: white;
+      border: none;
+      padding: 12px 20px;
+      font-size: 16px;
+      border-radius: 4px;
+      cursor: pointer;
+      display: inline-block;
+    }
+    
+    .btn:hover {
+      background-color: #2980b9;
+    }
+    
+    .btn-success {
+      background-color: #27ae60;
+    }
+    
+    .btn-success:hover {
+      background-color: #219955;
+    }
+    
+    /* Confirmation Styles */
+    .confirmation {
+      display: none;
+      background-color: #f1f9f1;
+      border: 1px solid #dff0d8;
+      padding: 20px;
+      border-radius: 4px;
+      margin-top: 20px;
+      text-align: center;
+    }
+    
+    .confirmation h3 {
+      color: #3c763d;
+      margin-top: 0;
+    }
+    
+    .confirmation p {
+      color: #3c763d;
+      margin-bottom: 10px;
+    }
+    
+    .help-box {
+      margin-top: 20px;
+      padding: 15px;
+      border: 1px dashed #ccc;
+      text-align: left;
+      background-color: #f9f9f9;
+    }
+    
+    /* Property Listings */
+    .listings-container {
+      display: none; /* Initially hidden */
+    }
+    
+    .listings-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+      gap: 20px;
+      margin-top: 30px;
+    }
+    
+    .property-card {
+      background-color: white;
+      border-radius: 8px;
+      overflow: hidden;
+      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+      transition: transform 0.3s ease;
+    }
+    
+    .property-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+    }
+    
+    .property-image {
+      height: 200px;
+      background-color: #eee;
+      background-size: cover;
+      background-position: center;
+    }
+    
+    .property-details {
+      padding: 15px;
+    }
+    
+    .property-title {
+      font-size: 18px;
+      font-weight: bold;
+      margin-bottom: 10px;
+    }
+    
+    .property-price {
+      font-size: 16px;
+      color: #16a085;
+      font-weight: bold;
+      margin-bottom: 10px;
+    }
+    
+    .property-address {
+      font-size: 14px;
+      color: #777;
+      margin-bottom: 15px;
+    }
+    
+    .property-features {
+      display: flex;
+      justify-content: space-between;
+      color: #666;
+      font-size: 14px;
+    }
+    
+    .btn-favorite {
+      background-color: #f8f9fa;
+      color: #333;
+      border: 1px solid #ddd;
+      padding: 8px 12px;
+      border-radius: 4px;
+      cursor: pointer;
+      margin-top: 10px;
+    }
+    
+    .btn-favorite:hover, .btn-favorite.active {
+      background-color: #e74c3c;
+      color: white;
+      border-color: #e74c3c;
+    }
+    
+    .favorites-indicator {
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      background-color: white;
+      padding: 10px 15px;
+      border-radius: 30px;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+      z-index: 100;
+    }
+    
+    .user-info {
+      background-color: #f8f9fa;
+      padding: 15px;
+      border-radius: 8px;
+      margin-bottom: 20px;
+      text-align: right;
+    }
+    
+    /* Placeholder for loading */
+    .placeholder {
+      background-color: #eee;
+      height: 200px;
+      border-radius: 8px;
+      margin-bottom: 15px;
+      animation: pulse 1.5s infinite;
+    }
+    
+    @keyframes pulse {
+      0% { opacity: 0.6; }
+      50% { opacity: 1; }
+      100% { opacity: 0.6; }
+    }
+  </style>
+</head>
+<body>
+  <!-- Authentication Overlay -->
+  <div class="auth-overlay" id="auth-overlay">
+    <div class="auth-content">
+      <h2>Property Listings Access</h2>
+      <p>Please register to view our exclusive property listings. Your information will help us provide you with personalized property recommendations.</p>
+      
+      <!-- Manual Registration Form -->
+      <form class="manual-form" id="registration-form">
+        <div class="form-group">
+          <label for="email">Email Address*</label>
+          <input type="email" id="email" required>
+        </div>
+        <div class="form-group">
+          <label for="firstname">First Name</label>
+          <input type="text" id="firstname">
+        </div>
+        <div class="form-group">
+          <label for="lastname">Last Name</label>
+          <input type="text" id="lastname">
+        </div>
+        <button type="submit" class="btn">Register to View Listings</button>
+      </form>
+      
+      <!-- Confirmation Message (Initially Hidden) -->
+      <div class="confirmation" id="confirmation-message">
+        <h3>Thank you for getting in touch!</h3>
+        <p>We appreciate your enquiry.</p>
+        <p>One of our sales team will be in touch shortly. <strong>Please check your inbox for a verification link to access the listings.</strong></p>
+        <p style="font-style: italic;">The verification email may take a few minutes to arrive. Please also check your spam folder.</p>
+        
+        <div class="help-box">
+          <p><strong>Not receiving the verification email?</strong></p>
+          <button id="direct-access-btn" class="btn btn-success">Access Listings Now</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <!-- Property Listings (Initially Hidden) -->
+  <div class="listings-container" id="listings-container">
+    <div class="container">
+      <div class="user-info" id="user-info">
+        <!-- User info will be added dynamically -->
+      </div>
+      
+      <h1>Property Listings</h1>
+      <p>Browse our exclusive property listings below. Click the heart icon to favorite properties.</p>
+      
+      <div class="favorites-indicator" id="favorites-count">
+        Favorites: <span id="favorite-count">0</span>
+      </div>
+      
+      <div class="listings-grid" id="listings-grid">
+        <!-- Properties will be added dynamically -->
+        <div class="placeholder"></div>
+        <div class="placeholder"></div>
+        <div class="placeholder"></div>
+        <div class="placeholder"></div>
+        <div class="placeholder"></div>
+        <div class="placeholder"></div>
+      </div>
+    </div>
+  </div>
+  
+  <script>
+    // Configuration
+    const HUBSPOT_CONFIG = {
+      portalId: '24160521',
+      formId: 'a00f1f67-1490-44a7-a571-142da5377383'
+    };
+    
+    // Sample properties data
+    const PROPERTIES = [
+      {
+        id: 1,
+        title: 'Modern Apartment in Coastal Heights',
+        price: '$750,000',
+        address: '123 Ocean View Drive, Sydney NSW 2000',
+        bedrooms: 2,
+        bathrooms: 2,
+        carspaces: 1,
+        image: 'https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80'
+      },
+      {
+        id: 2,
+        title: 'Luxury Penthouse at Harbourside',
+        price: '$1,250,000',
+        address: '45 Harbor View, Sydney NSW 2000',
+        bedrooms: 3,
+        bathrooms: 2,
+        carspaces: 2,
+        image: 'https://images.unsplash.com/photo-1493809842364-78817add7ffb?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80'
+      },
+      {
+        id: 3,
+        title: 'Family Home in Garden Villas',
+        price: '$950,000',
+        address: '78 Parkland Avenue, Sydney NSW 2220',
+        bedrooms: 4,
+        bathrooms: 3,
+        carspaces: 2,
+        image: 'https://images.unsplash.com/photo-1580587771525-78b9dba3b914?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80'
+      },
+      {
+        id: 4,
+        title: 'Boutique Apartment at The Grace',
+        price: '$695,000',
+        address: '22 Central Boulevard, Sydney NSW 2010',
+        bedrooms: 2,
+        bathrooms: 1,
+        carspaces: 1,
+        image: 'https://images.unsplash.com/photo-1512917774080-9991f1c4c750?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80'
+      },
+      {
+        id: 5,
+        title: 'Spacious Townhouse at Ashton Gardens',
+        price: '$825,000',
+        address: '15 Garden Lane, Sydney NSW 2120',
+        bedrooms: 3,
+        bathrooms: 2.5,
+        carspaces: 2,
+        image: 'https://images.unsplash.com/photo-1576941089067-2de3c901e126?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80'
+      },
+      {
+        id: 6,
+        title: 'Urban Loft at Paddington Estate',
+        price: '$585,000',
+        address: '88 Urban Street, Sydney NSW 2021',
+        bedrooms: 1,
+        bathrooms: 1,
+        carspaces: 1,
+        image: 'https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80'
+      }
+    ];
+    
+    // Project mapping function
+    function getProjectFromPropertyTitle(propertyTitle) {
+      if (!propertyTitle) return 'General Enquiry';
+      
+      // Standardize the input
+      const title = propertyTitle.toLowerCase().trim();
+      
+      // Mapping table of project names
+      const projectMappings = {
+        // Official project mappings
+        'ashton gardens': 'Ashton Gardens',
+        'bloomfield': 'Bloomfield',
+        'botanica': 'Botanica',
+        'garfield': 'Garfield Grange',
+        'grange': 'Garfield Grange',
+        'one fairway': 'One FairWay',
+        'onefairway': 'One FairWay',
+        'fairway': 'One FairWay',
+        'paddington estate': 'Paddington Estate',
+        'paddington': 'Paddington Estate',
+        'park avenue': 'Park Avenue',
+        'parkave': 'Park Avenue',
+        'park ave ii': 'Park Avenue II',
+        'parkave2': 'Park Avenue II',
+        'river oaks': 'River Oaks',
+        'riviere': 'Rivière',
+        'harbourside': 'Rivière',
+        'the grace': 'The Grace',
+        'grace': 'The Grace',
+        'rouse hill': 'The Rouse Hill Estate',
+        'valley rise': 'Valley Rise',
+        'coastal heights': 'Coastal Heights',
+        'ocean view': 'Coastal Heights',
+        'garden villas': 'Garden Villas'
+      };
+      
+      // Check for direct matches first
+      for (const [key, value] of Object.entries(projectMappings)) {
+        if (title.includes(key)) {
+          return value;
+        }
+      }
+      
+      // Default to General Enquiry
+      return 'General Enquiry';
+    }
+    
+    // Function to save user data to localStorage
+    function saveUserData(data) {
+      localStorage.setItem('cg-user', JSON.stringify(data));
+    }
+    
+    // Function to get user data from localStorage
+    function getUserData() {
+      const data = localStorage.getItem('cg-user');
+      return data ? JSON.parse(data) : null;
+    }
+    
+    // Function to update user favorites
+    function updateFavorites(propertyId, add = true) {
+      // Get current user data
+      const userData = getUserData() || { favorites: [], listings_of_interest: [], projects_of_interest: [] };
+      
+      // Initialize arrays if they don't exist
+      if (!userData.favorites) userData.favorites = [];
+      if (!userData.listings_of_interest) userData.listings_of_interest = [];
+      if (!userData.projects_of_interest) userData.projects_of_interest = [];
+      
+      // Find property
+      const property = PROPERTIES.find(p => p.id === propertyId);
+      if (!property) return;
+      
+      if (add) {
+        // Add to favorites if not already there
+        if (!userData.favorites.includes(propertyId)) {
+          userData.favorites.push(propertyId);
+        }
+        
+        // Add to listings of interest if not already there
+        if (!userData.listings_of_interest.includes(property.title)) {
+          userData.listings_of_interest.push(property.title);
+        }
+        
+        // Get project and add to projects of interest
+        const project = getProjectFromPropertyTitle(property.title);
+        if (project && !userData.projects_of_interest.includes(project)) {
+          userData.projects_of_interest.push(project);
+        }
+      } else {
+        // Remove from favorites
+        userData.favorites = userData.favorites.filter(id => id !== propertyId);
+        
+        // Remove from listings of interest
+        userData.listings_of_interest = userData.listings_of_interest.filter(
+          title => title !== property.title
+        );
+      }
+      
+      // Save updated data
+      saveUserData(userData);
+      
+      // Update favorites count
+      updateFavoritesCount();
+      
+      // Update HubSpot if authenticated
+      if (userData.authenticated && userData.email) {
+        submitToHubSpot(userData);
+      }
+      
+      return userData;
+    }
+    
+    // Function to update favorites count display
+    function updateFavoritesCount() {
+      const userData = getUserData();
+      const count = userData && userData.favorites ? userData.favorites.length : 0;
+      document.getElementById('favorite-count').textContent = count.toString();
+    }
+    
+    // Function to submit data to HubSpot
+    function submitToHubSpot(userData) {
+      // Prepare custom fields
+      let cgListingsOfInterest = '';
+      if (userData.listings_of_interest && userData.listings_of_interest.length > 0) {
+        cgListingsOfInterest = userData.listings_of_interest.join('\n');
+      }
+      
+      // Create a hidden iframe for the form submission
+      const iframe = document.createElement('iframe');
+      iframe.style.display = 'none';
+      document.body.appendChild(iframe);
+      
+      // Create the form in the iframe
+      const iframeDocument = iframe.contentDocument || iframe.contentWindow.document;
+      iframeDocument.body.innerHTML = `
+        <form id="hubspot-form" method="POST" action="https://forms.hsforms.com/submissions/v3/public/submit/formsnext/multipart/${HUBSPOT_CONFIG.portalId}/${HUBSPOT_CONFIG.formId}">
+          <input type="hidden" name="email" value="${userData.email || ''}">
+          <input type="hidden" name="firstname" value="${userData.firstName || ''}">
+          <input type="hidden" name="lastname" value="${userData.lastName || ''}">
+          <input type="hidden" name="cg_needs_verification" value="Yes">
+          <input type="hidden" name="cg_listings_of_interest" value="${cgListingsOfInterest}">
+          <input type="hidden" name="hs_context" value='{"hutk": "${getHubspotCookie() || ''}"}'>
+        </form>
+      `;
+      
+      // Submit the form
+      const form = iframeDocument.getElementById('hubspot-form');
+      form.submit();
+      
+      // Remove the iframe after a delay
+      setTimeout(() => {
+        document.body.removeChild(iframe);
+      }, 5000);
+    }
+    
+    // Function to get HubSpot cookie
+    function getHubspotCookie() {
+      const cookies = document.cookie.split(';');
+      for (let i = 0; i < cookies.length; i++) {
+        const cookie = cookies[i].trim();
+        if (cookie.startsWith('hubspotutk=')) {
+          return cookie.substring('hubspotutk='.length);
+        }
+      }
+      return '';
+    }
+    
+    // Function to show listings
+    function showListings() {
+      // Hide authentication overlay
+      document.getElementById('auth-overlay').style.display = 'none';
+      
+      // Show listings container
+      document.getElementById('listings-container').style.display = 'block';
+      
+      // Display user info
+      displayUserInfo();
+      
+      // Render properties
+      renderProperties();
+    }
+    
+    // Function to display user information
+    function displayUserInfo() {
+      const userData = getUserData();
+      if (userData && userData.email) {
+        document.getElementById('user-info').innerHTML = `
+          <p>Welcome, ${userData.firstName || 'Guest'} | <a href="#" id="logout-link">Logout</a></p>
+        `;
+        
+        // Add logout functionality
+        document.getElementById('logout-link').addEventListener('click', function(e) {
+          e.preventDefault();
+          localStorage.removeItem('cg-user');
+          window.location.reload();
+        });
+      }
+    }
+    
+    // Function to render properties
+    function renderProperties() {
+      const grid = document.getElementById('listings-grid');
+      grid.innerHTML = '';
+      
+      // Get user favorites
+      const userData = getUserData();
+      const favorites = userData && userData.favorites ? userData.favorites : [];
+      
+      // Render each property
+      PROPERTIES.forEach(property => {
+        const isFavorite = favorites.includes(property.id);
+        
+        const card = document.createElement('div');
+        card.className = 'property-card';
+        card.innerHTML = `
+          <div class="property-image" style="background-image: url('${property.image}')"></div>
+          <div class="property-details">
+            <div class="property-title">${property.title}</div>
+            <div class="property-price">${property.price}</div>
+            <div class="property-address">${property.address}</div>
+            <div class="property-features">
+              <span>${property.bedrooms} Beds</span>
+              <span>${property.bathrooms} Baths</span>
+              <span>${property.carspaces} Cars</span>
+            </div>
+            <button class="btn-favorite ${isFavorite ? 'active' : ''}" data-id="${property.id}">
+              ❤ ${isFavorite ? 'Favorited' : 'Favorite'}
+            </button>
+          </div>
+        `;
+        
+        // Add event listener for favorite button
+        const favoriteBtn = card.querySelector('.btn-favorite');
+        favoriteBtn.addEventListener('click', function() {
+          const id = parseInt(this.getAttribute('data-id'));
+          const isActive = this.classList.contains('active');
+          
+          if (isActive) {
+            this.classList.remove('active');
+            this.textContent = '❤ Favorite';
+            updateFavorites(id, false);
+          } else {
+            this.classList.add('active');
+            this.textContent = '❤ Favorited';
+            updateFavorites(id, true);
+          }
+        });
+        
+        grid.appendChild(card);
+      });
+    }
+    
+    // Form submission handler
+    document.getElementById('registration-form').addEventListener('submit', function(e) {
+      e.preventDefault();
+      
+      // Get form data
+      const email = document.getElementById('email').value;
+      const firstName = document.getElementById('firstname').value;
+      const lastName = document.getElementById('lastname').value;
+      
+      // Store user data
+      const userData = getUserData() || {};
+      userData.email = email;
+      userData.firstName = firstName;
+      userData.lastName = lastName;
+      userData.authenticated = true;
+      userData.needsVerification = true;
+      
+      // Initialize arrays if they don't exist
+      if (!userData.favorites) userData.favorites = [];
+      if (!userData.listings_of_interest) userData.listings_of_interest = [];
+      if (!userData.projects_of_interest) userData.projects_of_interest = [];
+      
+      // Save user data
+      saveUserData(userData);
+      
+      // Submit to HubSpot
+      submitToHubSpot(userData);
+      
+      // Hide form and show confirmation
+      this.style.display = 'none';
+      document.getElementById('confirmation-message').style.display = 'block';
+    });
+    
+    // Direct access button handler
+    document.getElementById('direct-access-btn').addEventListener('click', function() {
+      showListings();
+    });
+    
+    // Check if user is already authenticated
+    document.addEventListener('DOMContentLoaded', function() {
+      const userData = getUserData();
+      if (userData && userData.authenticated) {
+        showListings();
+      }
+      
+      // Update favorites count
+      updateFavoritesCount();
+    });
+  </script>
+</body>
+</html>

@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Property Listings Authentication</title>
+  
+  <!-- HubSpot Tracking Code -->
+  <script type="text/javascript" id="hs-script-loader" async defer src="//js.hs-scripts.com/24160521.js"></script>
+  
+  <!-- HubSpot Forms API -->
+  <script charset="utf-8" type="text/javascript" src="//js.hsforms.net/forms/embed/v2.js"></script>
+  
+  <style>
+    body {
+      font-family: 'Arial', sans-serif;
+      margin: 0;
+      padding: 0;
+      background-color: #f8f8f8;
+    }
+    
+    .auth-wrapper {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(255, 255, 255, 0.95);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      z-index: 9999;
+    }
+    
+    .auth-container {
+      background-color: white;
+      border-radius: 8px;
+      padding: 30px;
+      width: 100%;
+      max-width: 600px;
+      box-shadow: 0 5px 20px rgba(0, 0, 0, 0.15);
+      text-align: center;
+    }
+    
+    h1 {
+      color: #333;
+      margin-top: 0;
+      margin-bottom: 10px;
+    }
+    
+    p {
+      color: #666;
+      margin-bottom: 30px;
+      line-height: 1.6;
+    }
+    
+    /* Content styles */
+    .content {
+      display: none; /* Hidden by default */
+      padding: 20px;
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+    
+    #manual-form {
+      max-width: 400px;
+      margin: 20px auto;
+      text-align: left;
+    }
+    
+    #manual-form .form-group {
+      margin-bottom: 15px;
+    }
+    
+    #manual-form label {
+      display: block;
+      margin-bottom: 5px;
+      font-weight: bold;
+    }
+    
+    #manual-form input {
+      width: 100%;
+      padding: 8px;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+    }
+    
+    #manual-form button {
+      background-color: #ff5722;
+      color: white;
+      border: none;
+      padding: 10px 20px;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 16px;
+      margin-top: 10px;
+    }
+    
+    #manual-form button:hover {
+      background-color: #e64a19;
+    }
+    
+    #continue-button {
+      background-color: #4CAF50;
+      color: white;
+      border: none;
+      padding: 10px 20px;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 16px;
+      margin-top: 20px;
+      display: none;
+    }
+    
+    #continue-button:hover {
+      background-color: #388E3C;
+    }
+  </style>
+</head>
+<body>
+  <!-- Authentication Overlay -->
+  <div class="auth-wrapper" id="auth-overlay">
+    <div class="auth-container">
+      <h1>Property Listings Access</h1>
+      <p>Please register to view our exclusive property listings. Your information will help us provide you with personalized property recommendations.</p>
+      
+      <!-- HubSpot Form Container -->
+      <div id="hubspot-form-container"></div>
+      
+      <!-- Fallback: Direct iframe embed -->
+      <iframe 
+        id="hubspot-iframe" 
+        src="https://share.hsforms.com/1oA8fZxSQRKelcRQtpTdzgwedudl" 
+        width="100%" 
+        height="500" 
+        frameborder="0"
+        style="border: none;">
+      </iframe>
+      
+      <!-- Continue button (shown after form submission) -->
+      <button id="continue-button">Continue to Listings</button>
+      
+      <!-- Manual Fallback Form (hidden by default) -->
+      <form id="manual-form" style="display: none;">
+        <div class="form-group">
+          <label for="email">Email Address *</label>
+          <input type="email" id="email" required>
+        </div>
+        <div class="form-group">
+          <label for="firstName">First Name</label>
+          <input type="text" id="firstName">
+        </div>
+        <div class="form-group">
+          <label for="lastName">Last Name</label>
+          <input type="text" id="lastName">
+        </div>
+        <button type="submit">Submit</button>
+      </form>
+    </div>
+  </div>
+  
+  <!-- Content (hidden until authenticated) -->
+  <div class="content" id="content">
+    <h1>Property Listings</h1>
+    <p>You are now viewing our exclusive property listings.</p>
+    
+    <!-- This is a placeholder. You would replace this with your actual listings content -->
+    <div class="property-listings">
+      <h2>Featured Properties</h2>
+      <p>This is where your property listings would appear after authentication.</p>
+    </div>
+  </div>
+  
+  <script>
+    // Check if user is already authenticated
+    function checkAuthentication() {
+      try {
+        const userData = localStorage.getItem('cg-user');
+        if (userData) {
+          const user = JSON.parse(userData);
+          if (user.authenticated) {
+            // User is already authenticated
+            showContent();
+            return true;
+          }
+        }
+      } catch (e) {
+        console.error('Error checking authentication:', e);
+      }
+      return false;
+    }
+    
+    // Show content and hide auth overlay
+    function showContent() {
+      document.getElementById('auth-overlay').style.display = 'none';
+      document.getElementById('content').style.display = 'block';
+    }
+    
+    // Save user data and mark as authenticated
+    function saveUserAndAuthenticate(email, firstName, lastName) {
+      try {
+        const userData = {
+          email: email || '',
+          firstName: firstName || '',
+          lastName: lastName || '',
+          authenticated: true,
+          listings_of_interest: [],
+          projects_of_interest: []
+        };
+        
+        localStorage.setItem('cg-user', JSON.stringify(userData));
+        console.log('User authenticated:', userData);
+        
+        // Show the content
+        showContent();
+      } catch (e) {
+        console.error('Error saving user data:', e);
+      }
+    }
+    
+    // Setup fallback mechanism
+    function setupFallbacks() {
+      // Show continue button after 5 seconds
+      setTimeout(function() {
+        document.getElementById('continue-button').style.display = 'block';
+      }, 5000);
+      
+      // Show manual form after 15 seconds if HubSpot form might be blocked
+      setTimeout(function() {
+        // If still on the auth screen, show the manual form
+        if (document.getElementById('auth-overlay').style.display !== 'none') {
+          document.getElementById('manual-form').style.display = 'block';
+        }
+      }, 15000);
+    }
+    
+    // Initialize the page
+    document.addEventListener('DOMContentLoaded', function() {
+      // Check if already authenticated
+      if (checkAuthentication()) {
+        return; // Already authenticated, content is shown
+      }
+      
+      // Try to load HubSpot form via API (may not work in all cases)
+      if (typeof hbspt !== 'undefined') {
+        try {
+          hbspt.forms.create({
+            region: "na1",
+            portalId: "24160521",
+            formId: "a00f1f67-1490-44a7-a571-142da5377383",
+            target: '#hubspot-form-container',
+            onFormSubmitted: function() {
+              saveUserAndAuthenticate(
+                document.querySelector('input[name="email"]')?.value,
+                document.querySelector('input[name="firstname"]')?.value,
+                document.querySelector('input[name="lastname"]')?.value
+              );
+            }
+          });
+          
+          // Hide the iframe if hbspt form loads
+          document.getElementById('hubspot-iframe').style.display = 'none';
+        } catch (e) {
+          console.error('Error creating HubSpot form:', e);
+        }
+      }
+      
+      // Set up the continue button
+      document.getElementById('continue-button').addEventListener('click', function() {
+        // Just authenticate without data if they click the button
+        saveUserAndAuthenticate();
+      });
+      
+      // Set up the manual form
+      document.getElementById('manual-form').addEventListener('submit', function(e) {
+        e.preventDefault();
+        const email = document.getElementById('email').value;
+        const firstName = document.getElementById('firstName').value;
+        const lastName = document.getElementById('lastName').value;
+        
+        saveUserAndAuthenticate(email, firstName, lastName);
+      });
+      
+      // Setup fallback mechanisms with timers
+      setupFallbacks();
+    });
+  </script>
+</body>
+</html>

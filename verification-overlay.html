@@ -1,0 +1,161 @@
+<!-- Verification Overlay Template -->
+<!-- Add this to your HTML file -->
+
+<div id="verification-overlay" class="cg-overlay" style="display: none;">
+  <div class="cg-overlay-content verification-content">
+    <div class="cg-close-btn" onclick="hideVerificationOverlay()">&times;</div>
+    
+    <div class="cg-overlay-header">
+      <h2>Email Verification Required</h2>
+    </div>
+    
+    <div class="cg-overlay-body">
+      <p class="verification-message">
+        We've sent a verification email to <span id="verification-email-display">your email address</span>.
+        Please check your inbox and click the verification link to access our property listings.
+      </p>
+      
+      <div class="verification-status">
+        <div class="verification-icon">
+          <i class="fas fa-envelope"></i>
+        </div>
+        <p>If you don't see the email, please check your spam folder.</p>
+      </div>
+      
+      <div class="verification-actions">
+        <button id="resend-verification-btn" class="cg-button">Resend Verification Email</button>
+        <div id="verification-error" class="error-message"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- CSS for Verification Overlay -->
+<style>
+  .verification-content {
+    max-width: 500px;
+  }
+  
+  .verification-message {
+    margin-bottom: 20px;
+    font-size: 16px;
+    line-height: 1.5;
+  }
+  
+  #verification-email-display {
+    font-weight: bold;
+  }
+  
+  .verification-status {
+    background-color: #f8f9fa;
+    border-radius: 8px;
+    padding: 15px;
+    margin-bottom: 20px;
+    display: flex;
+    align-items: center;
+  }
+  
+  .verification-icon {
+    font-size: 24px;
+    margin-right: 15px;
+    color: #0c6efd;
+  }
+  
+  .verification-actions {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+  
+  #resend-verification-btn {
+    margin-bottom: 10px;
+  }
+  
+  .error-message {
+    color: #dc3545;
+    font-size: 14px;
+    text-align: center;
+  }
+</style>
+
+<!-- JavaScript Functions -->
+<script>
+  // Function to show verification overlay
+  function showVerificationScreen(email) {
+    // Set the email in the display span
+    document.getElementById('verification-email-display').textContent = email || 'your email address';
+    
+    // Hide any other overlays
+    hideAuthOverlay();
+    
+    // Show verification overlay
+    document.getElementById('verification-overlay').style.display = 'flex';
+    document.body.style.overflow = 'hidden'; // Prevent scrolling
+    
+    // Set up resend button
+    setupResendButton(email);
+  }
+  
+  // Function to hide verification overlay
+  function hideVerificationOverlay() {
+    document.getElementById('verification-overlay').style.display = 'none';
+    document.body.style.overflow = 'auto'; // Re-enable scrolling
+  }
+  
+  // Set up resend verification button
+  function setupResendButton(email) {
+    const resendButton = document.getElementById('resend-verification-btn');
+    const errorElement = document.getElementById('verification-error');
+    
+    // Clear any previous error
+    errorElement.textContent = '';
+    
+    // Add click handler
+    resendButton.onclick = async function() {
+      // Prevent multiple clicks
+      if (resendButton.disabled) return;
+      
+      // Update button state
+      const originalText = resendButton.textContent;
+      resendButton.textContent = 'Sending...';
+      resendButton.disabled = true;
+      
+      try {
+        // Try to get existing user data
+        const storedUser = localStorage.getItem('cg-user');
+        let userData = null;
+        
+        if (storedUser) {
+          try {
+            userData = JSON.parse(storedUser);
+          } catch (e) {
+            console.error('Error parsing stored user:', e);
+          }
+        }
+        
+        // If we don't have user data, create minimal data with email
+        if (!userData) {
+          userData = { email: email };
+        }
+        
+        // Generate a new verification token
+        userData.verificationToken = btoa(email + ':' + Date.now());
+        userData.verified = false;
+        
+        // Send verification email
+        await sendVerificationEmail(userData);
+        
+        // Show success message
+        errorElement.textContent = 'Verification email resent successfully!';
+        errorElement.style.color = '#4CAF50';
+      } catch (error) {
+        console.error('Error resending verification:', error);
+        errorElement.textContent = 'Failed to resend verification. Please try again.';
+      } finally {
+        // Reset button state
+        resendButton.textContent = originalText;
+        resendButton.disabled = false;
+      }
+    };
+  }
+</script>

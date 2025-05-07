@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Property Listings</title>
+    <!-- Project Mapping Script -->
+    <script src="project-mapping.js"></script>
+    <!-- HubSpot Update Script -->
+    <script src="hubspot-update.js"></script>
+    <!-- HubSpot Integration -->
+    <script charset="utf-8" type="text/javascript" src="//js.hsforms.net/forms/embed/v2.js"></script>
+    <style>
+        .property-listing {
+            border: 1px solid #ddd;
+            padding: 15px;
+            margin-bottom: 20px;
+            border-radius: 5px;
+        }
+        .property-listing img {
+            max-width: 100%;
+            height: auto;
+        }
+        .interest-btn {
+            background-color: #ff5722;
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        .form-container {
+            margin-top: 40px;
+            padding: 20px;
+            border: 1px solid #eee;
+            border-radius: 5px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Property Listings</h1>
+    
+    <div class="property-listings-container">
+        <!-- Example Property Listing -->
+        <div class="property-listing" data-project-id="coastal-heights">
+            <h2>Coastal Heights</h2>
+            <p>Location: Ocean View Drive</p>
+            <p>Price: $750,000</p>
+            <p>Bedrooms: 3 | Bathrooms: 2</p>
+            <p>Description: Luxury oceanfront property with stunning views and modern amenities.</p>
+            <button class="interest-btn" onclick="trackPropertyInterest('Coastal Heights', 'coastal-heights')">I'm Interested</button>
+        </div>
+        
+        <div class="property-listing" data-project-id="urban-lofts">
+            <h2>Urban Lofts</h2>
+            <p>Location: Downtown District</p>
+            <p>Price: $550,000</p>
+            <p>Bedrooms: 2 | Bathrooms: 2</p>
+            <p>Description: Modern loft in the heart of the city with high ceilings and industrial design.</p>
+            <button class="interest-btn" onclick="trackPropertyInterest('Urban Lofts', 'urban-lofts')">I'm Interested</button>
+        </div>
+    </div>
+    
+    <!-- HubSpot Form Container -->
+    <div class="form-container">
+        <h2>Express Your Interest</h2>
+        <p>Please fill out the form below to receive more information about the properties you're interested in.</p>
+        <div id="hubspot-form-container"></div>
+    </div>
+
+    <script>
+        // Array to track property interests
+        let propertiesOfInterest = [];
+        let projectsOfInterest = new Set();
+        
+        // Function to track property interest
+        function trackPropertyInterest(propertyName, projectId) {
+            // Get current user (assuming auth implemented)
+            const currentUser = getCurrentUser();
+            
+            if (!currentUser) {
+                // If not logged in, store temporarily and prompt for login
+                if (!propertiesOfInterest.includes(propertyName)) {
+                    propertiesOfInterest.push(propertyName);
+                    
+                    // Update hidden field in HubSpot form if visible
+                    const listingsField = document.querySelector('textarea[name="cg_listings_of_interest"]');
+                    if (listingsField) {
+                        listingsField.value = propertiesOfInterest.join('\n');
+                    }
+                    
+                    alert(`Added ${propertyName} to your interests! Please complete the form to receive information.`);
+                }
+                
+                // Track project interest locally
+                if (projectId) {
+                    projectsOfInterest.add(projectId);
+                    updateProjectCheckboxes();
+                }
+                
+                // Show the form
+                document.querySelector('.form-container').scrollIntoView({behavior: 'smooth'});
+                return;
+            }
+            
+            // User is logged in, track their interest in HubSpot directly
+            const interactionData = {
+                propertyTitle: propertyName,
+                propertyId: projectId,
+                interactionType: 'inquiry',
+                timestamp: new Date().toISOString()
+            };
+            
+            // Use our HubSpot update function (from hubspot-update.js)
+            trackPropertyInquiry(interactionData);
+            
+            alert(`Thank you for your interest in ${propertyName}. We'll update your preferences.`);
+        }
+        
+        // Helper function to get current user (placeholder)
+        function getCurrentUser() {
+            // This would be replaced with actual auth logic
+            return null; // For now always show the form
+        }
+        
+        // Function to update project checkboxes
+        function updateProjectCheckboxes() {
+            // For each project in our Set
+            projectsOfInterest.forEach(projectId => {
+                // First try to find existing checkbox
+                let checkbox = document.querySelector(`input[name="all_projects_of_interest"][value="${projectId}"]`);
+                
+                // If checkbox doesn't exist, look for one with mapped project name
+                if (!checkbox && typeof getProjectFromPropertyTitle === 'function') {
+                    const projectName = getProjectFromPropertyTitle(projectId);
+                    checkbox = document.querySelector(`input[name="all_projects_of_interest"][value="${projectName}"]`);
+                }
+                
+                // Mark as checked if found
+                if (checkbox) {
+                    checkbox.checked = true;
+                }
+            });
+        }
+        
+        // Initialize HubSpot Form
+        window.onload = function() {
+            hbspt.forms.create({
+                region: "na1",
+                portalId: "24160521",
+                formId: "a00f1f67-1490-44a7-a571-142da5377383",
+                target: "#hubspot-form-container",
+                onFormReady: function($form) {
+                    // Add event listeners or any custom code here
+                    console.log("HubSpot form is ready");
+                    
+                    // Add a hidden field for storing listings of interest if it doesn't exist
+                    if (!document.querySelector('textarea[name="cg_listings_of_interest"]')) {
+                        const listingsField = document.createElement('textarea');
+                        listingsField.name = 'cg_listings_of_interest';
+                        listingsField.style.display = 'none';
+                        $form.appendChild(listingsField);
+                    }
+                    
+                    // Initialize with any previously tracked interests
+                    if (propertiesOfInterest.length > 0) {
+                        const listingsField = document.querySelector('textarea[name="cg_listings_of_interest"]');
+                        if (listingsField) {
+                            listingsField.value = propertiesOfInterest.join('\n');
+                        }
+                    }
+                    
+                    // Initialize project checkboxes
+                    if (projectsOfInterest.size > 0) {
+                        updateProjectCheckboxes();
+                    }
+                    
+                    // Add form submission handler
+                    $form.addEventListener('submit', function(e) {
+                        // Form will be submitted to HubSpot by their script
+                        // This is a chance to do any last-minute updates
+                        console.log('Form submitted', propertiesOfInterest);
+                        
+                        // Reset interests after submission
+                        setTimeout(() => {
+                            propertiesOfInterest = [];
+                            projectsOfInterest = new Set();
+                        }, 1000);
+                    });
+                },
+                onFormSubmit: function($form) {
+                    // Called just before the form is submitted
+                    // Last chance to modify anything
+                    const listingsField = document.querySelector('textarea[name="cg_listings_of_interest"]');
+                    if (listingsField && propertiesOfInterest.length > 0) {
+                        listingsField.value = propertiesOfInterest.join('\n');
+                    }
+                }
+            });
+        };
+    </script>
+</body>
+</html>

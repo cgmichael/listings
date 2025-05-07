@@ -1,0 +1,23 @@
+    // Fetch a contact from HubSpot by email
+    async function fetchHubSpotContact(email) {
+      try {
+        // Note: This requires a HubSpot API key and server-side implementation
+        // For security reasons, we can't directly call the HubSpot API from the client
+        // This is a placeholder - you'll need to implement a server-side endpoint
+        // that uses HubSpot's API to fetch contact data
+        
+        // Since we can't implement this directly on the client side,
+        // return a mock response for now
+        console.log(`[MOCK] Fetching contact data for: ${email}`);
+        
+        // In production, this would be replaced with an actual API call
+        return {
+          email: email,
+          // We don't have the actual current value, just mock that it doesn't exist yet
+          cg_listings_of_interest: '' 
+        };
+      } catch (error) {
+        console.error('Error fetching HubSpot contact:', error);
+        throw error;
+      }
+    }

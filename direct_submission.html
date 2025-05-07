@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Direct HubSpot Submission</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 20px;
+    }
+    .container {
+      max-width: 800px;
+      margin: 0 auto;
+      background-color: #f8f8f8;
+      padding: 20px;
+      border-radius: 8px;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+    h1 {
+      color: #333;
+    }
+    button {
+      background-color: #2c7bdc;
+      color: white;
+      border: none;
+      padding: 10px 20px;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 16px;
+      margin-top: 20px;
+    }
+    button:hover {
+      background-color: #1b5cad;
+    }
+    #results {
+      margin-top: 20px;
+      padding: 15px;
+      border: 1px solid #ddd;
+      background-color: #fff;
+      border-radius: 4px;
+      display: none;
+    }
+    .success {
+      color: green;
+      font-weight: bold;
+    }
+    .error {
+      color: red;
+      font-weight: bold;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Submit Data Directly to HubSpot</h1>
+    <p>This page will help you directly submit data to HubSpot to trigger the email workflow.</p>
+    
+    <form id="direct-form">
+      <div>
+        <label for="email">Email Address:</label>
+        <input type="email" id="email" required style="width: 100%; padding: 8px; margin: 5px 0 15px;">
+      </div>
+      
+      <div>
+        <label for="firstname">First Name:</label>
+        <input type="text" id="firstname" style="width: 100%; padding: 8px; margin: 5px 0 15px;">
+      </div>
+      
+      <div>
+        <label for="lastname">Last Name:</label>
+        <input type="text" id="lastname" style="width: 100%; padding: 8px; margin: 5px 0 15px;">
+      </div>
+      
+      <button type="submit">Submit to HubSpot</button>
+    </form>
+    
+    <div id="results"></div>
+  </div>
+  
+  <script>
+    document.getElementById('direct-form').addEventListener('submit', function(e) {
+      e.preventDefault();
+      
+      const results = document.getElementById('results');
+      results.style.display = 'block';
+      results.innerHTML = 'Submitting to HubSpot...';
+      
+      const email = document.getElementById('email').value;
+      const firstname = document.getElementById('firstname').value;
+      const lastname = document.getElementById('lastname').value;
+      
+      // Method 1: Direct HubSpot API Submission
+      submitHubSpotData(email, firstname, lastname)
+        .then(response => {
+          console.log('HubSpot Response:', response);
+          results.innerHTML = `
+            <p class="success">Successfully submitted to HubSpot!</p>
+            <p>Check your email at <strong>${email}</strong> for the verification link.</p>
+            <p>You can now close this window.</p>
+          `;
+        })
+        .catch(error => {
+          console.error('Error:', error);
+          results.innerHTML = `
+            <p class="error">There was an error submitting to HubSpot.</p>
+            <p>Please try another method:</p>
+            <p><a href="https://share.hsforms.com/1oA8fZxSQRKelcRQtpTdzgwedudl?email=${encodeURIComponent(email)}&firstname=${encodeURIComponent(firstname)}&lastname=${encodeURIComponent(lastname)}&cg_needs_verification=Yes" target="_blank">Click here to open the HubSpot form directly</a></p>
+          `;
+        });
+    });
+    
+    async function submitHubSpotData(email, firstname, lastname) {
+      // This is a simplified approach - in a real implementation, this would be done 
+      // through a server-side endpoint to protect your API key
+      
+      const portalId = '24160521';
+      const formId = 'a00f1f67-1490-44a7-a571-142da5377383';
+      const url = `https://api.hsforms.com/submissions/v3/integration/submit/${portalId}/${formId}`;
+      
+      const data = {
+        fields: [
+          {
+            name: "email",
+            value: email
+          },
+          {
+            name: "firstname",
+            value: firstname || ''
+          },
+          {
+            name: "lastname",
+            value: lastname || ''
+          },
+          {
+            name: "cg_needs_verification",
+            value: "Yes"
+          }
+        ],
+        context: {
+          pageUri: window.location.href,
+          pageName: "Property Listings Authentication"
+        }
+      };
+      
+      const response = await fetch(url, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(data)
+      });
+      
+      if (!response.ok) {
+        const errorText = await response.text();
+        throw new Error(`HTTP error ${response.status}: ${errorText}`);
+      }
+      
+      return response.json();
+    }
+  </script>
+</body>
+</html>
