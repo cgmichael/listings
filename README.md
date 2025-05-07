@@ -1,6 +1,17 @@
-# Listing Directory HubSpot Integration
+# Listing Directory HubSpot Integration - Enhanced API Version
 
 This guide explains how to set up HubSpot to capture leads from the property listings directory.
+
+## API Integration Improvements
+
+The enhanced version includes several improvements to API integration:
+
+- More robust error handling for API calls
+- Enhanced debugging tools to diagnose API issues
+- Cache management for real property data
+- Visual indicators for API call status
+- Protection against sample data fallback
+- Debug panel for API response inspection
 
 ## HubSpot Setup Instructions
 
